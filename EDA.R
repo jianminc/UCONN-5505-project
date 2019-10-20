@@ -1,2 +1,3 @@
 ##EDA
-sfad
+dat=read.table('self.csv')
+summary(dat)
