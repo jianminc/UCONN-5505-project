@@ -1,0 +1,431 @@
+---
+title: "Untitled"
+author: "Jianmin Chen"
+date: "2019/11/25"
+output: pdf_document
+---
+```{r}
+library(tidyverse)
+library(gridExtra)
+dat_1 = read.csv('./../data/3ST.csv')
+dat_2 = read.csv('./../data/4ST.csv')
+dat_3 = read.csv('./../data/4SG.csv')
+dat_all = rbind(dat_1,dat_2,dat_3)
+dat_all$INTERTYPE = c(rep('3ST',nrow(dat_1)),rep('4ST',nrow(dat_2)),rep('4SG',nrow(dat_3)))
+```
+
+## 1.1 Overall
+
+Overall distribution of 3 types of accidents: Use original counts, and group counts larger than 10 to be a single group. Make pie plots
+
+### 1-1-1 PDO
+```{r}
+cbPalette <- c("#999999", "#E69F00", "#56B4E9", "#009E73",
+               "#F0E442","#0072B2","#D55E00","#CC79A7",
+               "#000000","#330066","#CC9933","#006600",
+               "#660033","#C1FFC1","#DCDCDC","#BDB76B","#FFD39B"
+               )
+
+tab1 = table(dat_all$PDO)
+over15 = sum(tab1[which(as.numeric(names(tab1))>15)])
+tab1 = tab1[which(as.numeric(names(tab1))<=15)]
+accidents = c(names(tab1),'over15')
+accidents=factor(accidents,levels=c("0" ,"1", "2", "3", "4", "5", "6" ,"7" ,"8" ,"9", "10", "11", "12", "13", "15","over15"))
+tab1 = data.frame(counts=c(as.vector(tab1),over15),accidents=accidents)
+tab1 = tab1 %>% mutate(labels=
+           paste(accidents,"(",counts,"/",round(counts/sum(counts),2)*100,"%",")",sep=""))
+p111 = ggplot(tab1,aes(x="",y=counts,fill=(accidents)))+
+  geom_bar(stat='identity')+coord_polar("y")+
+  scale_fill_manual(values =cbPalette,labels=tab1$labels)+
+  theme(legend.text = element_text(size = 9),axis.text = element_blank())+
+  ggtitle("Distribution of Number of Overall Annual PDO Counts")
+png(file="./../../report/image/p1.png")
+p111
+dev.off()
+```
+
+### 1-1-2 KA
+
+```{r}
+tab1 = table(dat_all$KA)
+over15 = sum(tab1[which(as.numeric(names(tab1))>15)])
+tab1 = tab1[which(as.numeric(names(tab1))<=15)]
+accidents = c(names(tab1),'over15')
+accidents=factor(accidents,levels=c(names(tab1),'over15'))
+tab1 = data.frame(counts=c(as.vector(tab1),over15),accidents)
+tab1 = tab1 %>% mutate(labels=
+           paste(accidents,"(",counts,"/",round(counts/sum(counts),2)*100,"%",")",sep=""))
+p112 = ggplot(tab1,aes(x="factor(1)",y=counts,fill=accidents))+
+  geom_bar(stat='identity')+coord_polar("y")+
+  scale_fill_manual(values =cbPalette,labels=tab1$labels)+
+  theme(legend.text = element_text(size = 10),axis.text = element_blank())+
+  ggtitle("Distribution of Number of Overall Annual KA Counts")
+png(file="./../../report/image/p112.png")
+p112
+dev.off()
+```
+
+### 1-1-3 BC
+
+```{r}
+tab1 = table(dat_all$BC)
+over15 = sum(tab1[which(as.numeric(names(tab1))>15)])
+tab1 = tab1[which(as.numeric(names(tab1))<=15)]
+accidents = c(names(tab1),'over15')
+accidents=factor(accidents,levels=c(names(tab1),'over15'))
+tab1 = data.frame(counts=c(as.vector(tab1),over15),accidents)
+tab1 = tab1 %>% mutate(labels=
+           paste(accidents,"(",counts,"/",round(counts/sum(counts),2)*100,"%",")",sep=""))
+p113 = ggplot(tab1,aes(x="factor(1)",y=counts,fill=accidents))+
+  geom_bar(stat='identity')+coord_polar("y")+
+  scale_fill_manual(values =cbPalette,labels=tab1$labels)+
+  theme(legend.text = element_text(size = 10),axis.text = element_blank())+
+  ggtitle("Distribution of Number of Overall Annual BC Counts")
+png(file="./../../report/image/p113.png")
+p113
+dev.off()
+```
+
+
+
+
+
+## 1.2 Accident counts VS variables
+
+Rearrange data with 1 observation stands for 1 crash.
+```{r}
+library(data.table)
+dat_1_trans = dat_1 %>% gather(PDO,KA,BC,key='crashtype',value='counts')%>%
+  rowwise %>% mutate(counts = ifelse(counts==0,list(0),list(1:counts))) %>% unnest(counts) %>%
+  mutate(counts = as.numeric(counts>0))
+dat_2_trans = dat_2 %>% gather(PDO,KA,BC,key='crashtype',value='counts')%>%
+  rowwise %>% mutate(counts = ifelse(counts==0,list(0),list(1:counts))) %>% unnest(counts) %>%
+  mutate(counts = as.numeric(counts>0))
+dat_3_trans = dat_3 %>% gather(PDO,KA,BC,key='crashtype',value='counts')%>%
+  rowwise %>% mutate(counts = ifelse(counts==0,list(0),list(1:counts))) %>% unnest(counts) %>%
+  mutate(counts = as.numeric(counts>0))
+dat_all_trans = rbind(dat_1_trans,dat_2_trans,dat_3_trans)
+dat_all_trans$intertype = c(rep('3ST',nrow(dat_1_trans)),rep('4ST',nrow(dat_2_trans)),rep('4SG',nrow(dat_3_trans)))
+```
+
+Start from discrete variables
+
+### 1-2-1 Accident across interaction type
+ 
+PDO
+```{r}
+datplot = dat_all
+datplot$PDO[which(datplot$PDO>15)] = 'over15'
+datplot$PDO=factor(datplot$PDO,levels=c(as.character(0:15),'over15'))
+p121_PDO = ggplot(datplot,aes(x=factor(1),fill=PDO))+
+  geom_bar(position = 'fill')+
+  coord_polar("y")+
+  scale_fill_manual(values =cbPalette )+
+  facet_wrap(~INTERTYPE)+
+  theme(legend.text = element_text(size = 10),
+        axis.text = element_blank(),
+        legend.position = 'top',
+        legend.title=element_text(size=10))+
+  ggtitle("Distribution of PDO Counts over InteractionType")
+png(file="./../../report/image/p121_PDO.png")
+p121_PDO
+dev.off()
+```
+
+KA
+```{r}
+datplot = dat_all
+datplot$KA[which(datplot$KA>15)] = 'over15'
+datplot$PDO=factor(datplot$PDO,levels=c(as.character(0:15),'over15'))
+p121_KA = ggplot(datplot,aes(x=factor(1),fill=KA))+
+  geom_bar(position = 'fill')+
+  coord_polar("y")+
+  scale_fill_manual(values =cbPalette )+
+  facet_wrap(~INTERTYPE)+
+  theme(legend.text = element_text(size = 10),
+        axis.text = element_blank(),
+        legend.position = 'top',
+        legend.title=element_text(size=10))+
+  ggtitle("Distribution of KA Counts over InteractionType")
+png(file="./../../report/image/p121_KA.png")
+p121_KA
+dev.off()
+```
+
+BC
+```{r}
+datplot = dat_all
+datplot$BC[which(datplot$BC>15)] = 'over15'
+datplot$PDO=factor(datplot$PDO,levels=c(as.character(0:15),'over15'))
+p121_BC = ggplot(datplot,aes(x=factor(1),fill=BC))+
+  geom_bar(position = 'fill')+
+  coord_polar("y")+
+  scale_fill_manual(values =cbPalette )+
+  facet_wrap(~INTERTYPE)+
+  theme(legend.text = element_text(size = 10),
+        axis.text = element_blank(),
+        legend.position = 'top',
+        legend.title=element_text(size=10))+
+  ggtitle("Distribution of BC Counts over InteractionType")
+png(file="./../../report/image/p121_BC.png")
+p121_BC
+dev.off()
+```
+
+
+### 1-2-2 Accident VS AADT-MAJOR
+
+```{r}
+g1 = dat_all %>% ggplot(aes(AADT_MAJOR,AADT_MINOR))+geom_point()+
+  geom_smooth(method='lm')+ggtitle('Relationship between AADT-Major and AADT-Minor')+facet_grid(~INTERTYPE)
+ggsave(file="./../../report/image/major_minor.png", g1)
+cor(dat_all$AADT_MAJOR,dat_all$AADT_MINOR)
+dat_all%>% group_by(INTERTYPE) %>% summarise(r=cor(AADT_MAJOR,AADT_MINOR))
+```
+
+overall
+
+```{r}
+p122_overall_pdo = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(PDO>0)) %>% 
+  ggplot(aes(y=AADT_MAJOR))+geom_boxplot(notch=TRUE)+facet_grid(.~PDO_ACCIDENT)+ggtitle("PDO vs AADT_MAJOR")
+ggsave(file="./../../report/image/major_all_pdo.png", p122_overall_pdo)
+
+p122_overall_ka = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(KA>0)) %>% 
+  ggplot(aes(y=AADT_MAJOR))+geom_boxplot(notch=TRUE)+facet_grid(.~PDO_ACCIDENT)+ggtitle("KA vs AADT_MAJOR")
+
+p122_overall_bc = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(BC>0)) %>% 
+  ggplot(aes(y=AADT_MAJOR))+geom_boxplot(notch=TRUE)+facet_grid(.~PDO_ACCIDENT)+ggtitle("BC vs AADT_MAJOR")
+```
+
+Across interaction type
+```{r}
+p122_pdo = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(PDO>0)) %>% 
+  ggplot(aes(y=AADT_MAJOR))+geom_boxplot(notch=TRUE)+facet_grid(INTERTYPE~PDO_ACCIDENT)+ggtitle("PDO vs AADT_MAJOR across InteractionType")
+
+p122_ka = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(KA>0)) %>% 
+  ggplot(aes(y=AADT_MAJOR))+geom_boxplot(notch=TRUE)+facet_grid(INTERTYPE~PDO_ACCIDENT)+ggtitle("KA vs AADT_MAJOR across InteractionType")
+ggsave(file="./../../report/image/major_ka.png", p122_ka)
+
+p122_bc = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(BC>0)) %>% 
+  ggplot(aes(y=AADT_MAJOR))+geom_boxplot(notch=TRUE)+facet_grid(INTERTYPE~PDO_ACCIDENT)+ggtitle("BC vs AADT_MAJOR across InteractionType")
+ggsave(file="./../../report/image/major_bc.png", p122_bc)
+```
+
+
+
+### 1-2-3 Accident VS AADT-MINOR
+
+overall
+
+```{r}
+p123_overall_pdo = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(PDO>0)) %>% 
+  ggplot(aes(y=AADT_MINOR))+geom_boxplot(notch=TRUE)+facet_grid(.~PDO_ACCIDENT)+ggtitle("PDO vs AADT_MINOR")
+ggsave(file="./../../report/image/minor_all_pdo.png", p123_overall_pdo)
+
+p123_overall_ka = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(KA>0)) %>% 
+  ggplot(aes(y=AADT_MINOR))+geom_boxplot(notch=TRUE)+facet_grid(.~PDO_ACCIDENT)+ggtitle("KA vs AADT_MINOR")
+
+p123_overall_bc = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(BC>0)) %>% 
+  ggplot(aes(y=AADT_MINOR))+geom_boxplot(notch=TRUE)+facet_grid(.~PDO_ACCIDENT)+ggtitle("BC vs AADT_MINOR")
+```
+
+Across interaction type
+```{r}
+P123_pdo = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(PDO>0)) %>% 
+  ggplot(aes(y=AADT_MINOR))+geom_boxplot(notch=TRUE)+facet_grid(INTERTYPE~PDO_ACCIDENT)+ggtitle("PDO vs AADT_MINOR across InteractionType")
+ggsave(file="./../../report/image/minor_pdo.png", P123_pdo)
+
+P123_ka = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(KA>0)) %>% 
+  ggplot(aes(y=AADT_MINOR))+geom_boxplot(notch=TRUE)+facet_grid(INTERTYPE~PDO_ACCIDENT)+ggtitle("KA vs AADT_MINOR across InteractionType")
+
+P123_bc = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(BC>0)) %>% 
+  ggplot(aes(y=AADT_MINOR))+geom_boxplot(notch=TRUE)+facet_grid(INTERTYPE~PDO_ACCIDENT)+ggtitle("BC vs AADT_MINOR across InteractionType")
+```
+
+
+### 1-2-4 Accident VS SKEW-ANGLE
+
+overall 
+
+```{r}
+p123_overall_pdo = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(PDO>0)) %>% 
+  ggplot(aes(y=SKEW_ANGLE))+geom_boxplot(notch=TRUE)+facet_grid(.~PDO_ACCIDENT)+ggtitle("PDO vs SKEW_ANGLE")
+ggsave(file="./../../report/image/angle_all_pdo.png", p123_overall_pdo)
+
+p123_overall_ka = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(KA>0)) %>% 
+  ggplot(aes(y=SKEW_ANGLE))+geom_boxplot(notch=TRUE)+facet_grid(.~PDO_ACCIDENT)+ggtitle("KA vs SKEW_ANGLE")
+
+p123_overall_bc = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(BC>0)) %>% 
+  ggplot(aes(y=SKEW_ANGLE))+geom_boxplot(notch=TRUE)+facet_grid(.~PDO_ACCIDENT)+ggtitle("BC vs SKEW_ANGLE")
+```
+
+
+Across interaction type
+
+```{r}
+p123_pdo = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(PDO>0)) %>% 
+  ggplot(aes(y=SKEW_ANGLE))+geom_boxplot(notch=TRUE)+facet_grid(INTERTYPE~PDO_ACCIDENT)+ggtitle("PDO vs SKEW_ANGLE across InteractionType")
+ggsave(file="./../../report/image/angle_pdo.png", p123_pdo)
+
+p123_ka = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(KA>0)) %>% 
+  ggplot(aes(y=SKEW_ANGLE))+geom_boxplot(notch=TRUE)+facet_grid(INTERTYPE~PDO_ACCIDENT)+ggtitle("KA vs SKEW_ANGLE across InteractionType")
+
+p123_bc = dat_all %>% mutate(PDO_ACCIDENT=as.numeric(BC>0)) %>% 
+  ggplot(aes(y=SKEW_ANGLE))+geom_boxplot(notch=TRUE)+facet_grid(INTERTYPE~PDO_ACCIDENT)+ggtitle("BC vs SKEW_ANGLE across InteractionType")
+```
+
+
+
+
+
+### 1-2-5 Accident VS lighting
+
+With 1 observation stands for 1 intersection
+
+```{r}
+dat_all$crash = as.numeric((dat_all$PDO+dat_all$BC+dat_all$KA)>0)
+
+getcatgraph <- function(v,crash){
+  if(crash=='PDO'){a=25;b=0.5}
+  if(crash=='KA'){a=3;b=1}
+  if(crash=='BC'){a=20;b=1}
+  if(crash=='crash'){a=2;b=1}
+  g1 = dat_all %>% filter(!!sym(v)==0) %>% group_by(!!sym(crash)) %>% summarise(count=n()) %>% mutate(percent=round(count/sum(count),2)) %>% ggplot(aes(x=!!sym(crash),y=percent))+
+    geom_bar(stat='identity')+coord_flip()+xlim(c(-1,a))+ylim(c(0,b))+
+    ggtitle(c(paste("Distribution of overall",as.character(crash),"Counts without",as.character(v))))
+  g2 = dat_all %>% filter(!!sym(v)==1) %>% group_by(!!sym(crash)) %>% summarise(count=n()) %>% mutate(percent=round(count/sum(count),2)) %>% ggplot(aes(x=!!sym(crash),y=percent))+
+    geom_bar(stat='identity')+coord_flip()+xlim(c(-1,a))+ylim(c(0,b))+
+    ggtitle(c(paste("Distribution of overall",as.character(crash),"Counts with",as.character(v))))
+  
+  g <- arrangeGrob(g1,g2,nrow=2) 
+  ggsave(file=paste("./../../image/",as.character(v),"_all_",as.character(crash),".png",sep=""), g)
+  
+  
+  g1 = dat_all %>% filter(!!sym(v)==0,INTERTYPE=='3ST') %>% group_by(!!sym(crash)) %>% summarise(count=n()) %>% mutate(percent=round(count/sum(count),2)) %>% ggplot(aes(x=!!sym(crash),y=percent))+
+    geom_bar(stat='identity')+coord_flip()+xlim(c(-1,a))+ylim(c(0,b))+
+    ggtitle(paste("Distribution of 3ST",as.character(crash),"Counts without",as.character(v)))
+  g2 = dat_all %>% filter(!!sym(v)==1,INTERTYPE=='3ST') %>% group_by(!!sym(crash)) %>% summarise(count=n()) %>% mutate(percent=round(count/sum(count),2)) %>% ggplot(aes(x=!!sym(crash),y=percent))+
+    geom_bar(stat='identity')+coord_flip()+xlim(c(-1,a))+ylim(c(0,b))+
+    ggtitle(paste("Distribution of 3ST",as.character(crash),"Counts with",as.character(v)))
+  
+  g <- arrangeGrob(g1,g2,nrow=2)
+  ggsave(file=paste("./../../image/",v,"_3ST_",crash,".png",sep=""), g)
+  
+  g1 = dat_all %>% filter(!!sym(v)==0,INTERTYPE=='4ST') %>% group_by(!!sym(crash)) %>% summarise(count=n()) %>% mutate(percent=round(count/sum(count),2)) %>% ggplot(aes(x=!!sym(crash),y=percent))+
+    geom_bar(stat='identity')+coord_flip()+xlim(c(-1,a))+ylim(c(0,b))+
+    ggtitle(paste("Distribution of 4ST",crash,"Counts without",v))
+  g2 = dat_all %>% filter(!!sym(v)==1,INTERTYPE=='4ST') %>% group_by(!!sym(crash)) %>% summarise(count=n()) %>% mutate(percent=round(count/sum(count),2)) %>% ggplot(aes(x=!!sym(crash),y=percent))+
+    geom_bar(stat='identity')+coord_flip()+xlim(c(-1,a))+ylim(c(0,b))+
+    ggtitle(paste("Distribution of 4ST",crash,"Counts with",v))
+  
+  g <- arrangeGrob(g1,g2,nrow=2)
+  ggsave(file=paste("./../../image/",v,"_4ST_",crash,".png",sep=""), g)
+  
+  g1 = dat_all %>% filter(!!sym(v)==0,INTERTYPE=='4SG') %>% group_by(!!sym(crash)) %>% summarise(count=n()) %>% mutate(percent=round(count/sum(count),2)) %>% ggplot(aes(x=!!sym(crash),y=percent))+
+    geom_bar(stat='identity')+coord_flip()+xlim(c(-1,a))+ylim(c(0,b))+
+    ggtitle(paste("Distribution of 4SG",crash,"Counts without",v))
+  g2 = dat_all %>% filter(!!sym(v)==1,INTERTYPE=='4SG') %>% group_by(!!sym(crash)) %>% summarise(count=n()) %>% mutate(percent=round(count/sum(count),2)) %>% ggplot(aes(x=!!sym(crash),y=percent))+
+    geom_bar(stat='identity')+coord_flip()+xlim(c(-1,a))+ylim(c(0,b))+
+    ggtitle(paste("Distribution of 4SG",crash,"Counts with",v))
+  
+  g <- arrangeGrob(g1,g2,nrow=2)
+  ggsave(file=paste("./../../image/",v,"_4SG_",crash,".png",sep=""), g)
+  
+}
+```  
+
+```{r}
+getcatgraph("LIGHTING","PDO")
+getcatgraph("LIGHTING","KA")
+getcatgraph("LIGHTING","BC")
+table(dat_all$LIGHTING)
+```
+
+with one observation stands for 1 crash
+
+```{r}
+dat_all_trans %>% group_by(crashtype,intertype,LIGHTING) %>% summarise(count=sum(counts)) %>% mutate(crash_percent=round(count/sum(count),2),LIGHTING=as.character(LIGHTING)) %>%
+  ggplot(aes(x=LIGHTING,y=crash_percent,fill=LIGHTING))+geom_bar(stat='identity')+
+  facet_grid(~crashtype+intertype)
+```
+
+
+### 1-2-6 Accident VS APPROACHLEFT_TURN
+
+```{r}
+table(dat_all$APPROACH_LEFTTURN,dat_all$INTERTYPE)
+getcatgraph("APPROACH_LEFTTURN","PDO")
+# too less obs in PDO 4ST
+getcatgraph("APPROACH_LEFTTURN","KA")
+getcatgraph("APPROACH_LEFTTURN","BC")
+
+# not partitioned by crashtype
+g1 = dat_all %>% mutate(APPROACH_LEFTTURN=as.character(APPROACH_LEFTTURN)) %>%
+  group_by(APPROACH_LEFTTURN,INTERTYPE) %>% 
+  summarise(crash_percent = mean(crash)) %>% 
+  ggplot(aes(x=APPROACH_LEFTTURN,y=crash_percent,fill=APPROACH_LEFTTURN))+geom_bar(stat='identity')+
+  facet_grid(~INTERTYPE)+ggtitle('Distribution of Crash-rate over Approach Left-Turn across Intersection Type')
+ggsave(file="./../../report/image/approach-left-turn.png", g1)
+
+g1 = dat_all %>% mutate(APPROACH_LEFTTURN=as.character(APPROACH_LEFTTURN)) %>%
+  group_by(APPROACH_LEFTTURN) %>% 
+  summarise(crash_percent = mean(crash)) %>% 
+  ggplot(aes(x=APPROACH_LEFTTURN,y=crash_percent,fill=APPROACH_LEFTTURN))+geom_bar(stat='identity')+ggtitle('Overall Distribution of Crash-rate over Approach Left-Turn')
+ggsave(file="./../../report/image/approach-left-turn-all.png", g1)
+
+```
+
+### 1-2-6 Accident VS APPROACHLEFTTRUE
+
+```{r}
+table(dat_all$APPROACH_RIGHTTURN,dat_all$INTERTYPE)
+getcatgraph("APPROACH_RIGHTTURN","PDO")
+# too less obs in PDO 4ST
+getcatgraph("APPROACH_RIGHTTURN","KA")
+getcatgraph("APPROACH_RIGHTTURN","BC")
+
+# not partitioned by crashtype
+g1 = dat_all %>% mutate(APPROACH_RIGHTTURN=as.character(APPROACH_RIGHTTURN)) %>%
+  group_by(APPROACH_RIGHTTURN,INTERTYPE) %>% 
+  summarise(crash_percent = mean(crash)) %>% 
+  ggplot(aes(x=APPROACH_RIGHTTURN,y=crash_percent,fill=APPROACH_RIGHTTURN))+geom_bar(stat='identity')+
+  facet_grid(~INTERTYPE)+ggtitle('Distribution of Crash-rate over Approach Right-Turn across Intersection Type')
+ggsave(file="./../../report/image/approach-right-turn.png", g1)
+
+g1 = dat_all %>% mutate(APPROACH_RIGHTTURN=as.character(APPROACH_RIGHTTURN)) %>%
+  group_by(APPROACH_RIGHTTURN) %>% 
+  summarise(crash_percent = mean(crash)) %>% 
+  ggplot(aes(x=APPROACH_RIGHTTURN,y=crash_percent,fill=APPROACH_RIGHTTURN))+geom_bar(stat='identity')+ggtitle('Overall Distribution of Crash-rate over Approach Right-Turn')
+ggsave(file="./../../report/image/approach-right-turn-all.png", g1)
+```
+
+
+### 1-2-7 Accident VS APPROATRUE
+
+```{r}
+dat_all$turn = as.numeric(dat_all$APPROACH_LEFTTURN+dat_all$APPROACH_RIGHTTURN>0)
+table(dat_all$turn,dat_all$INTERTYPE)
+
+# not partitioned by crashtype
+g1 = dat_all %>% mutate(turn=as.character(turn)) %>%
+  group_by(turn,INTERTYPE) %>% 
+  summarise(crash_percent = mean(crash)) %>% 
+  ggplot(aes(x=turn,y=crash_percent,fill=turn))+geom_bar(stat='identity')+
+  facet_grid(~INTERTYPE)+ggtitle('Distribution of Crash-rate over Approach Turn across Intersection Type')
+ggsave(file="./../../report/image/approach-turn.png", g1)
+
+g1 = dat_all %>% mutate(turn=as.character(turn)) %>%
+  group_by(turn) %>% 
+  summarise(crash_percent = mean(crash)) %>% 
+  ggplot(aes(x=turn,y=crash_percent,fill=turn))+geom_bar(stat='identity')+ggtitle('Overall Distribution of Crash-rate over Approach Turn')
+ggsave(file="./../../report/image/approach-turn-all.png", g1)
+```
+
+
+
+
+
+
+
+
+

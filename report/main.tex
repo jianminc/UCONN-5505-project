@@ -12,7 +12,7 @@
 %
 % License:
 % CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
-% 
+%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %----------------------------------------------------------------------------------------
@@ -65,7 +65,204 @@ In this paper, the group conducts the exploratory data analysis and statistical 
 
 
 \section{Exploratory Data Analysis}
+We first rearranged the 3 data set and combined them into 1 single data set. One column is added to specify the intersection type, denoted as INTERTYPE. It has 3 values, "3ST","4ST" and "4SG". Then we have 12 variables and 548 observations in total. "INTERSECTION-ID" and "ID" will not be analysed here since we are not interested in specific intersection. In the rest 10 variables, "AADT-MAJOR", "AADT-MINOR", "SKEW-ANGLE" are continuous quantitative variables. "PDO","KA" and "BC" are discrete  quantitative variables. "LIGHTING","APPROACH-LEFTTURN","APPROACH-RIGHTTURN", and "INTERTYPE" can be used as categorical qualitative variables. We are interested in the relationship between "PDO", "KA", "BC" and other variables.
 
+A new categorical binary variable is constructed with "1" standing for there exists crash and "0" standing for no crash. This variable is denoted as "crash" and it is used as a candidate response variable when we want to analyse the data with mixed types of crash.
+
+In this part, we will do exploratory data analysis to first find some insight of the data.
+
+\subsection{Overall Distribution}
+
+First, let us see overall distribution of the 3 types of crashes and the distribution across intersection types.
+
+For the PDO(property damage only) crashes, around 38\% of the intersections have 0 PDO crash overall. The overall distribution of PDO is spread out with some extreme values larger than 15. The distribution across different intersections shows some variations. The distribution is similar to the overall distribution in the 3ST type, while in 4SG and 4ST types, there are fewer zero counts and the data has larger variance with more non-zero counts had hence heavier tails. These infer that 4-way intersections tend to have more PDO crashes, especially the 4-way signalised intersection.
+
+\begin{figure}[H]
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/p111.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/p121_PDO.png}
+\small
+\end{minipage}
+\caption{Pie chart of PDO}
+\end{figure}
+
+For the BC(possible injury or nonincapacitating injury) crashes, over one-half(59\%) of the intersections have 0 crash and 76\% of all intersections have less than 2 crashes. Like PDO, 4-way intersections tend to have larger number of BC crashes.
+
+\begin{figure}[H]
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/p113.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/p121_BC.png}
+\small
+\end{minipage}
+\caption{Pie chart of PDO}
+\end{figure}
+
+For the KA(fatal or incapacitating injury) crashes, only 0,1 and 2 crashes are observed. We can infer that Poisson or Negative Binomial distribution may not be suitable to fit the KA data. Quite similar to the conclusion above, 4SG and 4ST types have larger proportion of intersection with crashes.
+
+\begin{figure}[H]
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/p112.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/p121_KA.png}
+\small
+\end{minipage}
+\caption{Pie chart of KA}
+\end{figure}
+
+Comparing the overall distribution of 3 types of crashes, we can see that for all 3 types, 0 crash has the maximum proportion in all 548 intersection. PDO and BC have more possible count values with larger dispersions, which is a hint that it is not plausible to mix PDO, KA and BC observations together when we want to model the distribution of crashes. Also, variance exists between types of intersections. Since intersection type is a more fixed factor that is hard to change in real traffic, in the following parts, we will analyse the data controlling intersection type to get some plausible suggestions to reduce crashes based on other variables. Since our aim is to find the vital factor of crashes, and KA crash can be considered as rare event, we will also treat crash as binary distributed variables in some latter analysis, with 0 stands for no crash and 1 stands for at least 1 crash.
+
+\subsection{Crash vs Qualitative Variables}
+
+Next, we find some interesting relationship between crash and the 3 categorical variables, LIGHTING, APPROACH-LEFTTURN, and APPROACH-RIGHTTURNk.
+
+\subsubsection{Lighting}
+
+First, let's see the relationship between LIGHTING and crashes. There are 197 intersections without lighting in all 548(around 36\%) intersections. Overall, when not controlling intersection type, intersection without lighting tends to have fewer crashes than intersection with lighting in all 3 types of crashes. We can compare the proportion of 0 counts in the following bar chart of PDO. The bar chart of BC and KA has similar tendency which are contained in appendix.
+
+When controlling intersection type, there are some interesting findings.
+
+For PDO, in 3ST and 4SG types, partitioned data has same tendency with whole data while for 4ST group, there is lower proportion of observations with crash when there is lighting, which is opposite to the whole data. For BC and KA, partitioning with intersection type generate same result in each group as the whole set.
+
+The plots infer that there might be a relationship between lighting and crash. We will not take 4ST PDO group out for special consideration as these group has a small number of observations which may cause larger randomness.
+
+\begin{figure}[H]
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/LIGHTING_all_PDO.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/LIGHTING_4ST_PDO.png}
+\small
+\end{minipage}
+\caption{Bar Chart of Lighting}
+\end{figure}
+
+\subsubsection{Approach Left Turn and Approach Right Turn}
+
+There are only 65 intersections with approach left-turn. When partitioned with intersection type, we get the following contingency table. From the table we can see that the counts get even smaller when separated into 3 type, there is not much sense to analyse with data further separated by crash type. We discuss the relationship between Approach Left-Turn and crash based on the generated columns "crash".
+
+There is similar problem with approach right-turn. And we also analyse based on crash as response variable. We observed similar association between these 2 variables and crash. Overall, when not controlling intersection type, intersection with approach left-turn or right turn has a higher crash rate, which infers that approach turn may has a positive relationship with car crashes. However, when we look into data grouped by intersection type, is it shown that left-turn or right turn does not have big effect with 3ST and 4SG intersections, even shown slightly negative relationship. The effect is only obvious in 4ST groups, where the number of observations with left or right turn are quite small. Hence, the result of overall data and 4ST data may not be reliable. We need to check the relationship with data only from 3ST and 4SG group and take intersection type into consideration.
+
+Further, as same patterns are observed with right-turn and left-turn, we combine these 2 variables into a new binary variable, denoted as "TURN", where "1" stands for there exists an approaching turn and "0" else. The follow graph is made with combined column. (Separated result is in Appendix.)
+
+\begin{table}[H]
+\begin{tabular}{|c|c|c|c|}
+\hline
+Observations      & 3ST & 4ST & 4SG \\
+\hline
+Without Left-turn & 368 & 58  & 57  \\
+\hline
+With Left-turn    & 17  & 44  & 4   \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\begin{figure}[H]
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/approach-turn-all.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/approach-turn.png}
+\small
+\end{minipage}
+\caption{Bar Chart of Approach Left Turn}
+\end{figure}
+
+\subsection{Crash vs Quantitative Variables}
+
+Also, there is likely to exist some association between AADT-MAJOR, AADT-MINOR, SKEW-ANGLE and crash.
+
+\subsubsection{AADT-MAJOR and AADT-MINOR}
+
+Selected graphs are shown in this part.
+
+We mainly apply the notched box-plot here to compare the distribution of AADT in intersection of crashes with intersection of no crash. The first 3 box plots below show significant difference on median of overall distribution as the notch does not overlap. This infers that generally, the intersections with crash has higher level of AADT-Major in all 3 types of crashes.
+
+After controlling the intersection type, all partitioned data shows same pattern that higher AADT-Major appears in group with crash. However, for PDO and BC, the difference is only significant in 3ST group and for KA, no difference is significant.
+
+\begin{figure}[H]
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/major_all_pdo.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/major_bc.png}
+\small
+\end{minipage}
+\caption{Boxplot of AADT-Major}
+\end{figure}
+
+For AADT-Minor, AADT-Minor is significantly larger in intersection with crash when exploring overall data for all of PDO, KA and BC. When taking intersection type into consideration, for 3ST group, same patters are observed as overall data and the difference are all significant. However, opposite pattern occurs in 4SG group that intersection with crash has a lower AADT-MINOR value. The difference of sample median between the with-crash and without-crash group is significant in PDO crash. For 4ST group, all difference in median is not significant.
+
+\begin{figure}[H]
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/minor_all_pdo.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/minor_pdo.png}
+\small
+\end{minipage}
+\caption{Boxplot of AADT-Minor}
+\end{figure}
+
+\subsubsection{Skew Angle}
+
+For Skew Angle, we apply notched box plot also. In all 3 types of crash, groups with crash have smaller median for skew angle while the difference is only significant in KA crash type. When controlling intersection type, only difference in 3ST intersectin and PDO crash shows significant larger pattern in no crash group. All other are insignificant. 4SG group get insignificant opposite pattern in PDO and BC crash. Skew angle is a variable that is considered less important.
+
+\begin{figure}[H]
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/angle_all_pdo.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/angle_pdo.png}
+\small
+\end{minipage}
+\caption{Boxplot of Skew Angle}
+\end{figure}
+
+\subsection{EDA Conclusion}
+
+We get the following guess from the EDA part and the verification will be shown in the next inference part.
+
+1. PDO, BC and KA has different distribution. They are not coming from different distribution family.
+
+2. Intersection type is a vital factor to crash. Four-way intersections are at a higher probability for all 3 types of crash.
+
+3. Intersection without lighting has a lower rate for all 3 types of crash. Controlling intersection type, same results are yielded except the PDO, 4ST group which has a lower crash rate when there is lighting. These results are kind of opposite to common sense.
+
+4. Approach (left or right) turn has negative effect on overall crash rate, which infers that when there is an approach turn, the crash rate goes down. The result is only for 3ST and 4ST group individually. Data for 4SG group will not be analysed with too few observations.
+
+5. AADT-Major and AADT-Minor is at a higher level in intersections with crash for whole data set. When controlling intersection, However, for AADT-Major, the tendency is only significant in 3ST group with PDO and BC. For AADT-Minor, opposite significant pattern occurs in 4SG group of PDO crash.
+
+6. Skew angle may not act as a vital factor to crash. 
 
 \section{Statistical Inference}
 
@@ -126,7 +323,7 @@ In this paper, the group conducts the exploratory data analysis and statistical 
 
 %\subsection{Identify the author of Equation \ref{eq:bayes} below and briefly describe it in English.}%
 
-%\begin{align} 
+%\begin{align}
 %	\label{eq:bayes}
 %	\begin{split}
 %		P(A|B) = \frac{P(B|A)P(A)}{P(B)}
@@ -139,7 +336,7 @@ In this paper, the group conducts the exploratory data analysis and statistical 
 
 %\subsection{Try to make sense of some more equations.}%
 
-%\begin{align} 
+%\begin{align}
 %	\begin{split}
 %		(x+y)^3 &= (x+y)^2(x+y)\\
 %		&=(x^2+2xy+y^2)(x+y)\\
@@ -148,9 +345,9 @@ In this paper, the group conducts the exploratory data analysis and statistical 
 %	\end{split}					
 %\end{align}%
 
-%Lorem ipsum dolor sit amet, consectetuer adipiscing elit. 
+%Lorem ipsum dolor sit amet, consectetuer adipiscing elit.
 %\begin{align}
-%	A = 
+%	A =
 %	\begin{bmatrix}
 %		A_{11} & A_{21} \\
 %		A_{21} & A_{22}
@@ -167,16 +364,16 @@ In this paper, the group conducts the exploratory data analysis and statistical 
 %\subsection{Bullet Point List}%
 
 %\begin{itemize}
-%	\item First item in a list 
+%	\item First item in a list
 %		\begin{itemize}
-%		\item First item in a list 
+%		\item First item in a list
 %			\begin{itemize}
-%			\item First item in a list 
-%			\item Second item in a list 
+%			\item First item in a list
+%			\item Second item in a list
 %			\end{itemize}
-%		\item Second item in a list 
+%		\item Second item in a list
 %		\end{itemize}
-%	\item Second item in a list 
+%	\item Second item in a list
 %\end{itemize}%
 
 %%------------------------------------------------%
@@ -184,8 +381,8 @@ In this paper, the group conducts the exploratory data analysis and statistical 
 %\subsection{Numbered List}%
 
 %\begin{enumerate}
-%	\item First item in a list 
-%	\item Second item in a list 
+%	\item First item in a list
+%	\item Second item in a list
 %	\item Third item in a list
 %\end{enumerate}%
 
