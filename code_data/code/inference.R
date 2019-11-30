@@ -243,10 +243,12 @@ for (i in 1:2){
   }
 }
 Q >= qchisq(0.95,df=(2*1))
+###########################################################################################################################################################################################
 
 ### Question 2: We have already known the crossing type affects the crash number, so we now explore whether cross type + another property may effects the crash number.
 
 ## Cross type + discrete skewed angle 
+############################################################################################################################################################################################################
 
 ## Firstly, we make skewed angle discrete:
 
@@ -254,7 +256,7 @@ dat_1$SKEW_ANGLE = cut(dat_1$SKEW_ANGLE, breaks=c(-1,31,61,91), labels=c(1,2,3))
 dat_2$SKEW_ANGLE = cut(dat_2$SKEW_ANGLE, breaks=c(-1,31,61,91), labels=c(1,2,3))
 dat_3$SKEW_ANGLE = cut(dat_3$SKEW_ANGLE, breaks=c(-1,31,61,91), labels=c(1,2,3))
 
-## Forming the table:
+## Forming the table (PDO):
 
 st3_1_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$SKEW_ANGLE==1),]),
                 nrow(dat_1[(dat_1$PDO>0) & (dat_1$SKEW_ANGLE==1),]), 
@@ -264,7 +266,7 @@ st3_2_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$SKEW_ANGLE==2),]),
                 nrow(dat_1[(dat_1$PDO==0) & (dat_1$SKEW_ANGLE==2),]) + nrow(dat_1[(dat_1$PDO>0) & (dat_1$SKEW_ANGLE==2),]))
 st3_3_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$SKEW_ANGLE==3),]),
                 nrow(dat_1[(dat_1$PDO>0) & (dat_1$SKEW_ANGLE==3),]), 
-                nrow(dat_1[(dat_1$BC==0) & (dat_1$SKEW_ANGLE==3),]) + nrow(dat_1[(dat_1$PDO>0) & (dat_1$SKEW_ANGLE==3),]))
+                nrow(dat_1[(dat_1$PDO==0) & (dat_1$SKEW_ANGLE==3),]) + nrow(dat_1[(dat_1$PDO>0) & (dat_1$SKEW_ANGLE==3),]))
 st4_1_crash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$SKEW_ANGLE==1),]),
                 nrow(dat_2[(dat_2$PDO>0) & (dat_2$SKEW_ANGLE==1),]), 
                 nrow(dat_2[(dat_2$PDO==0) & (dat_2$SKEW_ANGLE==1),]) + nrow(dat_2[(dat_2$PDO>0) & (dat_2$SKEW_ANGLE==1),]))
@@ -285,9 +287,182 @@ sg4_3_crash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$SKEW_ANGLE==3),]),
                 nrow(dat_3[(dat_3$PDO==0) & (dat_3$SKEW_ANGLE==3),]) + nrow(dat_3[(dat_3$PDO>0) & (dat_3$SKEW_ANGLE==3),]))
 total = st3_1_crash + st3_2_crash + st3_3_crash + st4_1_crash + st4_2_crash + st4_3_crash + sg4_1_crash + sg4_2_crash + sg4_3_crash 
 tbl <- data.frame(st3_1_crash, st3_2_crash, st3_3_crash, st4_1_crash, st4_2_crash, st4_3_crash, sg4_1_crash,
-                  sg4_2_crash, sg4_3_crash, total)
+                  sg4_2_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
 rownames(tbl) <- c('Safe',"Crash","total")
 tbl
 
+### Conduct chi-square test:
 
+Q = 0
+for (i in 1:2){
+  for (j in 1:8){
+    Q = Q + (tbl[i,j]-(tbl[i,9]*tbl[3,j]/tbl[3,9]))^2/(tbl[i,9]*tbl[3,j]/tbl[3,9])
+  }
+}
+Q >= qchisq(0.95,df=(2*1))
+
+### It returns true, so there exist correlation.
+
+
+## Cross type + light (PDO)
+#########################################################################################################################################################
+
+st3_0_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$LIGHTING==0),]),
+                nrow(dat_1[(dat_1$PDO>0) & (dat_1$LIGHTING==0),]), 
+                nrow(dat_1[(dat_1$PDO==0) & (dat_1$LIGHTING==0),]) + nrow(dat_1[(dat_1$PDO>0) & (dat_1$LIGHTING==0),]))
+st3_1_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$LIGHTING==1),]),
+                nrow(dat_1[(dat_1$PDO>0) & (dat_1$LIGHTING==1),]), 
+                nrow(dat_1[(dat_1$PDO==0) & (dat_1$LIGHTING==1),]) + nrow(dat_1[(dat_1$PDO>0) & (dat_1$LIGHTING==1),]))
+st4_0_crash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$LIGHTING==0),]),
+                nrow(dat_2[(dat_2$PDO>0) & (dat_2$LIGHTING==0),]), 
+                nrow(dat_2[(dat_2$PDO==0) & (dat_2$LIGHTING==0),]) + nrow(dat_2[(dat_2$PDO>0) & (dat_2$LIGHTING==0),]))
+st4_1_crash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$LIGHTING==1),]),
+                nrow(dat_2[(dat_2$PDO>0) & (dat_2$LIGHTING==1),]), 
+                nrow(dat_2[(dat_2$PDO==0) & (dat_2$LIGHTING==1),]) + nrow(dat_2[(dat_2$PDO>0) & (dat_2$LIGHTING==1),]))
+sg4_0_crash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$LIGHTING==0),]),
+                nrow(dat_3[(dat_3$PDO>0) & (dat_3$LIGHTING==0),]), 
+                nrow(dat_3[(dat_3$PDO==0) & (dat_3$LIGHTING==0),]) + nrow(dat_3[(dat_3$PDO>0) & (dat_3$LIGHTING==0),]))
+sg4_1_crash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$LIGHTING==1),]),
+                nrow(dat_3[(dat_3$PDO>0) & (dat_3$LIGHTING==1),]), 
+                nrow(dat_3[(dat_3$PDO==0) & (dat_3$LIGHTING==1),]) + nrow(dat_3[(dat_3$PDO>0) & (dat_3$LIGHTING==1),]))
+total = st3_0_crash + st3_1_crash + st4_0_crash + st4_1_crash + sg4_0_crash + sg4_1_crash 
+tbl <- data.frame(st3_0_crash, st3_1_crash, st4_0_crash, st4_1_crash, sg4_0_crash, sg4_1_crash, total)
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+Q = 0
+for (i in 1:2){
+  for (j in 1:6){
+    Q = Q + (tbl[i,j]-(tbl[i,7]*tbl[3,j]/tbl[3,7]))^2/(tbl[i,7]*tbl[3,j]/tbl[3,7])
+  }
+}
+Q >= qchisq(0.95,df=(2*1))
+
+
+### Cross type + turn 
+#######################################################################################################################
+
+st3_00_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$APPROACH_LEFTTURN==0) & (dat_1$APPROACH_RIGHTTURN==0),]),
+                nrow(dat_1[(dat_1$PDO>0) & (dat_1$APPROACH_LEFTTURN==0) & (dat_1$APPROACH_RIGHTTURN==0),]), 
+                nrow(dat_1[(dat_1$PDO==0) & (dat_1$APPROACH_LEFTTURN==0) & (dat_1$APPROACH_RIGHTTURN==0),]) + nrow(dat_1[(dat_1$PDO>0) & (dat_1$APPROACH_LEFTTURN==0) & (dat_1$APPROACH_RIGHTTURN==0),]))
+st3_10_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$APPROACH_LEFTTURN==1) & (dat_1$APPROACH_RIGHTTURN==0),]),
+                 nrow(dat_1[(dat_1$PDO>0) & (dat_1$APPROACH_LEFTTURN==1) & (dat_1$APPROACH_RIGHTTURN==0),]), 
+                 nrow(dat_1[(dat_1$PDO==0) & (dat_1$APPROACH_LEFTTURN==1) & (dat_1$APPROACH_RIGHTTURN==0),]) + nrow(dat_1[(dat_1$PDO>0) & (dat_1$APPROACH_LEFTTURN==1) & (dat_1$APPROACH_RIGHTTURN==0),]))
+st3_01_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$APPROACH_LEFTTURN==0) & (dat_1$APPROACH_RIGHTTURN==1),]),
+                 nrow(dat_1[(dat_1$PDO>0) & (dat_1$APPROACH_LEFTTURN==0) & (dat_1$APPROACH_RIGHTTURN==1),]), 
+                 nrow(dat_1[(dat_1$PDO==0) & (dat_1$APPROACH_LEFTTURN==0) & (dat_1$APPROACH_RIGHTTURN==1),]) + nrow(dat_1[(dat_1$PDO>0) & (dat_1$APPROACH_LEFTTURN==0) & (dat_1$APPROACH_RIGHTTURN==1),]))
+st3_11_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$APPROACH_LEFTTURN==1) & (dat_1$APPROACH_RIGHTTURN==1),]),
+                 nrow(dat_1[(dat_1$PDO>0) & (dat_1$APPROACH_LEFTTURN==1) & (dat_1$APPROACH_RIGHTTURN==1),]), 
+                 nrow(dat_1[(dat_1$PDO==0) & (dat_1$APPROACH_LEFTTURN==1) & (dat_1$APPROACH_RIGHTTURN==1),]) + nrow(dat_1[(dat_1$PDO>0) & (dat_1$APPROACH_LEFTTURN==1) & (dat_1$APPROACH_RIGHTTURN==1),]))
+
+st4_00_crash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$APPROACH_LEFTTURN==0) & (dat_2$APPROACH_RIGHTTURN==0),]),
+                 nrow(dat_2[(dat_2$PDO>0) & (dat_2$APPROACH_LEFTTURN==0) & (dat_2$APPROACH_RIGHTTURN==0),]), 
+                 nrow(dat_2[(dat_2$PDO==0) & (dat_2$APPROACH_LEFTTURN==0) & (dat_2$APPROACH_RIGHTTURN==0),]) + nrow(dat_2[(dat_2$PDO>0) & (dat_2$APPROACH_LEFTTURN==0) & (dat_2$APPROACH_RIGHTTURN==0),]))
+st4_10_crash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$APPROACH_LEFTTURN==1) & (dat_2$APPROACH_RIGHTTURN==0),]),
+                 nrow(dat_2[(dat_2$PDO>0) & (dat_2$APPROACH_LEFTTURN==1) & (dat_2$APPROACH_RIGHTTURN==0),]), 
+                 nrow(dat_2[(dat_2$PDO==0) & (dat_2$APPROACH_LEFTTURN==1) & (dat_2$APPROACH_RIGHTTURN==0),]) + nrow(dat_2[(dat_2$PDO>0) & (dat_2$APPROACH_LEFTTURN==1) & (dat_2$APPROACH_RIGHTTURN==0),]))
+st4_01_crash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$APPROACH_LEFTTURN==0) & (dat_2$APPROACH_RIGHTTURN==1),]),
+                 nrow(dat_2[(dat_2$PDO>0) & (dat_2$APPROACH_LEFTTURN==0) & (dat_2$APPROACH_RIGHTTURN==1),]), 
+                 nrow(dat_2[(dat_2$PDO==0) & (dat_2$APPROACH_LEFTTURN==0) & (dat_2$APPROACH_RIGHTTURN==1),]) + nrow(dat_2[(dat_2$PDO>0) & (dat_2$APPROACH_LEFTTURN==0) & (dat_2$APPROACH_RIGHTTURN==1),]))
+st4_11_crash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$APPROACH_LEFTTURN==1) & (dat_2$APPROACH_RIGHTTURN==1),]),
+                 nrow(dat_2[(dat_2$PDO>0) & (dat_2$APPROACH_LEFTTURN==1) & (dat_2$APPROACH_RIGHTTURN==1),]), 
+                 nrow(dat_2[(dat_2$PDO==0) & (dat_2$APPROACH_LEFTTURN==1) & (dat_2$APPROACH_RIGHTTURN==1),]) + nrow(dat_2[(dat_2$PDO>0) & (dat_2$APPROACH_LEFTTURN==1) & (dat_2$APPROACH_RIGHTTURN==1),]))
+
+sg4_00_crash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$APPROACH_LEFTTURN==0) & (dat_3$APPROACH_RIGHTTURN==0),]),
+                 nrow(dat_3[(dat_3$PDO>0) & (dat_3$APPROACH_LEFTTURN==0) & (dat_3$APPROACH_RIGHTTURN==0),]), 
+                 nrow(dat_3[(dat_3$PDO==0) & (dat_3$APPROACH_LEFTTURN==0) & (dat_3$APPROACH_RIGHTTURN==0),]) + nrow(dat_3[(dat_3$PDO>0) & (dat_3$APPROACH_LEFTTURN==0) & (dat_3$APPROACH_RIGHTTURN==0),]))
+sg4_10_crash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$APPROACH_LEFTTURN==1) & (dat_3$APPROACH_RIGHTTURN==0),]),
+                 nrow(dat_3[(dat_3$PDO>0) & (dat_3$APPROACH_LEFTTURN==1) & (dat_3$APPROACH_RIGHTTURN==0),]), 
+                 nrow(dat_3[(dat_3$PDO==0) & (dat_3$APPROACH_LEFTTURN==1) & (dat_3$APPROACH_RIGHTTURN==0),]) + nrow(dat_3[(dat_3$PDO>0) & (dat_3$APPROACH_LEFTTURN==1) & (dat_3$APPROACH_RIGHTTURN==0),]))
+sg4_01_crash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$APPROACH_LEFTTURN==0) & (dat_3$APPROACH_RIGHTTURN==1),]),
+                 nrow(dat_3[(dat_3$PDO>0) & (dat_3$APPROACH_LEFTTURN==0) & (dat_3$APPROACH_RIGHTTURN==1),]), 
+                 nrow(dat_3[(dat_3$PDO==0) & (dat_3$APPROACH_LEFTTURN==0) & (dat_3$APPROACH_RIGHTTURN==1),]) + nrow(dat_3[(dat_3$PDO>0) & (dat_3$APPROACH_LEFTTURN==0) & (dat_3$APPROACH_RIGHTTURN==1),]))
+sg4_11_crash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$APPROACH_LEFTTURN==1) & (dat_3$APPROACH_RIGHTTURN==1),]),
+                 nrow(dat_3[(dat_3$PDO>0) & (dat_3$APPROACH_LEFTTURN==1) & (dat_3$APPROACH_RIGHTTURN==1),]), 
+                 nrow(dat_3[(dat_3$PDO==0) & (dat_3$APPROACH_LEFTTURN==1) & (dat_3$APPROACH_RIGHTTURN==1),]) + nrow(dat_3[(dat_3$PDO>0) & (dat_3$APPROACH_LEFTTURN==1) & (dat_3$APPROACH_RIGHTTURN==1),]))
+
+tbl <- data.frame(st3_00_crash,st3_01_crash,st3_10_crash,st3_11_crash,st4_00_crash,st4_10_crash,st4_11_crash,sg4_00_crash,sg4_01_crash,sg4_10_crash,sg4_11_crash,total)
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+Q = 0
+for (i in 1:2){
+  for (j in 1:11){
+    Q = Q + (tbl[i,j]-(tbl[i,12]*tbl[3,j]/tbl[3,12]))^2/(tbl[i,12]*tbl[3,j]/tbl[3,12])
+  }
+}
+Q >= qchisq(0.95,df=(2*1))
+
+### Cross type + AADT major
+########################################################################################################################################
+
+st3_aadt_m_pdocrash = dat_1[dat_1$PDO>0,c("AADT_MAJOR")]
+st3_aadt_m_pdonocrash = dat_1[dat_1$PDO==0,c("AADT_MAJOR")]
+st4_aadt_m_pdocrash = dat_2[dat_2$PDO>0,c("AADT_MAJOR")]
+st4_aadt_m_pdonocrash = dat_2[dat_2$PDO==0,c("AADT_MAJOR")]
+sg4_aadt_m_pdocrash = dat_3[dat_3$PDO>0,c("AADT_MAJOR")]
+sg4_aadt_m_pdonocrash = dat_3[dat_3$PDO==0,c("AADT_MAJOR")]
+
+### Comparing st3:
+shapiro.test(st3_aadt_m_pdocrash)
+shapiro.test(st3_aadt_m_pdonocrash)
+shapiro.test(st4_aadt_m_pdocrash)
+shapiro.test(st4_aadt_m_pdonocrash)
+shapiro.test(sg4_aadt_m_pdocrash)
+shapiro.test(sg4_aadt_m_pdonocrash)
+
+### Only sg4_aadt_m_pdonocrash passes the normality test, while their dispersions are similar, so we decide to conduct w-rank test.
+
+### Check st3 (crash v.s. non crash)
+
+X <- data.frame(value = data.matrix(st3_aadt_m_pdonocrash), label = "nocrash") 
+Y <- data.frame(value = data.matrix(st3_aadt_m_pdocrash), label = "crash") 
+data_XY <- rbind(X,Y)[order(rbind(X,Y)$value),]
+data_XY$rank = rank(data_XY$value, ties.method = "average")
+table(data_XY$rank)[table(data_XY$rank)!= 1]
+W <- data_XY[data_XY$label=='crash',] %>% dplyr::select("rank") %>% sum
+n = length(st3_aadt_m_pdocrash)
+m = length(st3_aadt_m_pdonocrash)
+E_0_W <- n *(m+n+1)/2
+var_0_W <- (m*n/12)*((m+n+1)-1/((m+n)*(m+n-1))*(35*2*(2^2-1)+18*3*(3^2-1)+9*4*(4^2-1)+10*5*(5^2-1)+6*6*(6^2-1)+3*7*(7^2-1)+2*9*(9^2-1)+4*10*(10^2-1)+12*(12^2-1)))
+T_ <- abs((W-E_0_W)/sqrt(var_0_W))
+Z_crit <- qnorm(0.025, 0, 1, lower.tail = F)
+abs(T_) > Z_crit
+
+### Yes, controlling crosstype, the major addt affects pdo crashing number.
+
+### Chech st4 (crash v.s. non crash)
+
+X <- data.frame(value = data.matrix(st4_aadt_m_pdonocrash), label = "nocrash") 
+Y <- data.frame(value = data.matrix(st4_aadt_m_pdocrash), label = "crash") 
+data_XY <- rbind(X,Y)[order(rbind(X,Y)$value),]
+data_XY$rank = rank(data_XY$value, ties.method = "average")
+table(data_XY$rank)[table(data_XY$rank)!= 1]
+W <- data_XY[data_XY$label=='crash',] %>% dplyr::select("rank") %>% sum
+n = length(st4_aadt_m_pdocrash)
+m = length(st4_aadt_m_pdonocrash)
+E_0_W <- n *(m+n+1)/2
+var_0_W <- (m*n/12)*((m+n+1)-1/((m+n)*(m+n-1))*(13*2*(2^2-1)+2*3*(3^2-1)))
+T_ <- abs((W-E_0_W)/sqrt(var_0_W))
+Z_crit <- qnorm(0.025, 0, 1, lower.tail = F)
+abs(T_) > Z_crit
+
+### This time, we think major addt doesn't affects pdo crashing number in st4 crossing.
+
+### Check sg4 (crash v.s. non crash)
+
+X <- data.frame(value = data.matrix(sg4_aadt_m_pdonocrash), label = "nocrash") 
+Y <- data.frame(value = data.matrix(sg4_aadt_m_pdocrash), label = "crash") 
+data_XY <- rbind(X,Y)[order(rbind(X,Y)$value),]
+data_XY$rank = rank(data_XY$value, ties.method = "average")
+table(data_XY$rank)[table(data_XY$rank)!= 1]
+W <- data_XY[data_XY$label=='crash',] %>% dplyr::select("rank") %>% sum
+n = length(sg4_aadt_m_pdocrash)
+m = length(sg4_aadt_m_pdonocrash)
+E_0_W <- n *(m+n+1)/2
+var_0_W <- (m*n/12)*((m+n+1)-1/((m+n)*(m+n-1))*(21*2*(2^2-1)+3*(3^2-1)+4*(4^2-1)))
+T_ <- abs((W-E_0_W)/sqrt(var_0_W))
+Z_crit <- qnorm(0.025, 0, 1, lower.tail = F)
+abs(T_) > Z_crit
+
+### And also, we don't have sufficent clue to show that major addt affects pdo crashing number in sg4 crossing.
 
