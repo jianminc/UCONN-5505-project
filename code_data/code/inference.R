@@ -466,3 +466,84 @@ abs(T_) > Z_crit
 
 ### And also, we don't have sufficent clue to show that major addt affects pdo crashing number in sg4 crossing.
 
+
+### Cross type + AADT minor
+########################################################################################################################################
+
+st3_aadt_m_pdocrash = dat_1[dat_1$PDO>0,c("AADT_MINOR")]
+st3_aadt_m_pdonocrash = dat_1[dat_1$PDO==0,c("AADT_MINOR")]
+st4_aadt_m_pdocrash = dat_2[dat_2$PDO>0,c("AADT_MINOR")]
+st4_aadt_m_pdonocrash = dat_2[dat_2$PDO==0,c("AADT_MINOR")]
+sg4_aadt_m_pdocrash = dat_3[dat_3$PDO>0,c("AADT_MINOR")]
+sg4_aadt_m_pdonocrash = dat_3[dat_3$PDO==0,c("AADT_MINOR")]
+
+### Comparing st3:
+shapiro.test(st3_aadt_m_pdocrash)
+shapiro.test(st3_aadt_m_pdonocrash)
+shapiro.test(st4_aadt_m_pdocrash)
+shapiro.test(st4_aadt_m_pdonocrash)
+shapiro.test(sg4_aadt_m_pdocrash)
+shapiro.test(sg4_aadt_m_pdonocrash)
+
+### Only sg4_aadt_m_pdonocrash passes the normality test, while their dispersions are similar, so we decide to conduct w-rank test.
+
+### Check st3 (crash v.s. non crash)
+
+X <- data.frame(value = data.matrix(st3_aadt_m_pdonocrash), label = "nocrash") 
+Y <- data.frame(value = data.matrix(st3_aadt_m_pdocrash), label = "crash") 
+data_XY <- rbind(X,Y)[order(rbind(X,Y)$value),]
+data_XY$rank = rank(data_XY$value, ties.method = "average")
+table(data_XY$rank)[table(data_XY$rank)!= 1]
+W <- data_XY[data_XY$label=='crash',] %>% dplyr::select("rank") %>% sum
+n = length(st3_aadt_m_pdocrash)
+m = length(st3_aadt_m_pdonocrash)
+E_0_W <- n *(m+n+1)/2
+var_0_W <- (m*n/12)*((m+n+1)-1/((m+n)*(m+n-1))*(6*2*(2^2-1)+9*3*(3^2-1)+8*4*(4^2-1)+4*5*(5^2-1)+4*6*(6^2-1)+4*7*(7^2-1)+5*8*(8^2-1)+3*9*(9^2-1)+2*10*(10^2-1)+2*11*(11^2-1)+2*12*(12^2-1)+13*(13^2-1)+3*14*(14^2-1)+15*(15^2-1)))
+T_ <- abs((W-E_0_W)/sqrt(var_0_W))
+Z_crit <- qnorm(0.025, 0, 1, lower.tail = F)
+abs(T_) > Z_crit
+
+### Yes, controlling crosstype, the major addt affects pdo crashing number.
+
+### Chech st4 (crash v.s. non crash)
+
+X <- data.frame(value = data.matrix(st4_aadt_m_pdonocrash), label = "nocrash") 
+Y <- data.frame(value = data.matrix(st4_aadt_m_pdocrash), label = "crash") 
+data_XY <- rbind(X,Y)[order(rbind(X,Y)$value),]
+data_XY$rank = rank(data_XY$value, ties.method = "average")
+table(data_XY$rank)[table(data_XY$rank)!= 1]
+W <- data_XY[data_XY$label=='crash',] %>% dplyr::select("rank") %>% sum
+n = length(st4_aadt_m_pdocrash)
+m = length(st4_aadt_m_pdonocrash)
+E_0_W <- n *(m+n+1)/2
+var_0_W <- (m*n/12)*((m+n+1)-1/((m+n)*(m+n-1))*(8*2*(2^2-1)+6*3*(3^2-1)+2*4*(4^2-1)+5*(5^2-1)))
+T_ <- abs((W-E_0_W)/sqrt(var_0_W))
+Z_crit <- qnorm(0.025, 0, 1, lower.tail = F)
+abs(T_) > Z_crit
+
+### This time, we think major addt doesn't affects pdo crashing number in st4 crossing.
+
+### Check sg4 (crash v.s. non crash)
+
+X <- data.frame(value = data.matrix(sg4_aadt_m_pdonocrash), label = "nocrash") 
+Y <- data.frame(value = data.matrix(sg4_aadt_m_pdocrash), label = "crash") 
+data_XY <- rbind(X,Y)[order(rbind(X,Y)$value),]
+data_XY$rank = rank(data_XY$value, ties.method = "average")
+table(data_XY$rank)[table(data_XY$rank)!= 1]
+W <- data_XY[data_XY$label=='crash',] %>% dplyr::select("rank") %>% sum
+n = length(sg4_aadt_m_pdocrash)
+m = length(sg4_aadt_m_pdonocrash)
+E_0_W <- n *(m+n+1)/2
+var_0_W <- (m*n/12)*((m+n+1)-1/((m+n)*(m+n-1))*(21*2*(2^2-1)+3*(3^2-1)+4*(4^2-1)))
+T_ <- abs((W-E_0_W)/sqrt(var_0_W))
+Z_crit <- qnorm(0.025, 0, 1, lower.tail = F)
+abs(T_) > Z_crit
+
+
+### Above, we have claimed that these variables are dependent, now we explore how they dependent.
+
+
+
+
+
+
