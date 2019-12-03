@@ -534,13 +534,12 @@ W <- data_XY[data_XY$label=='crash',] %>% dplyr::select("rank") %>% sum
 n = length(sg4_aadt_m_pdocrash)
 m = length(sg4_aadt_m_pdonocrash)
 E_0_W <- n *(m+n+1)/2
-var_0_W <- (m*n/12)*((m+n+1)-1/((m+n)*(m+n-1))*(21*2*(2^2-1)+3*(3^2-1)+4*(4^2-1)))
+var_0_W <- (m*n/12)*((m+n+1)-1/((m+n)*(m+n-1))*(16*2*(2^2-1)+8*(3^2-1)+3*(4^2-1)))
 T_ <- abs((W-E_0_W)/sqrt(var_0_W))
 Z_crit <- qnorm(0.025, 0, 1, lower.tail = F)
 abs(T_) > Z_crit
 
 
-### Above, we have claimed that these variables are dependent, now we explore how they dependent.
 
 
 
