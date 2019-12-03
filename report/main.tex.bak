@@ -123,7 +123,7 @@ For the BC(possible injury or non-incapacitating injury) crashes, over one-half(
 \includegraphics[width=3in]{image/p121_BC.png}
 \small
 \end{minipage}
-\caption{Pie chart of BC}
+\caption{Pie chart of PDO}
 \end{figure}
 
 For the KA(fatal or incapacitating injury) crashes, only 0,1 and 2 crashes are observed. We can infer that Poisson or Negative Binomial distribution may not be suitable to fit the KA data. Quite similar to the conclusion above, 4SG and 4ST types have larger proportion of intersection with crashes.
@@ -287,23 +287,10 @@ We get the following guess from the EDA part and the verification will be shown 
 
 \subsection{One v.s. PDO crashing independence test}
 
-We first test the relationship between crash and intersection type for 3 types of crash separately. We mainly use 3 types of methods here. When treating crash count as qualitative, normality assumption and same dispersion assumption are checked in each paired sample. Since none of the pairs satisfies normal assumption, we use Mann-Whitney test when paired sample has same dispersion. When we get different dispersion, we calculate Bootstrap confidence interval for difference of sample mean to check whether the interval contains 0 or not. If the interval contains 0, we infer that there is not obvious difference on the sample mean. Re-sampling time is set as 1000 in Bootstrap method. The same dispersion tests are carried out by Ansari-Bradley nonparametric test here. Whether the impact is positive or negative can be directly got from the tests above.
+{\color{red}{We first test the relationship between crash and intersection type for 3 types of crash separately. Then we need to conduct 3 '2 vs 2' tests for each crash type. To get overall significant level for each crash type to be 5\%, in each single test, the significant level will be adjusted as 5/3
+\%. We mainly use 3 types of methods here. When treating crash count as qualitative, normality assumption and same dispersion assumption are checked in each paired sample. Since none of the pairs satisfies normal assumption, we use Mann-Whitney test when paired sample has same dispersion. When we get different dispersion, we calculate Bootstrap confidence interval for difference of sample mean to check whether the interval contains 0 or not. If the interval contains 0, we infer that there is not significant difference on the sample mean. The same dispersion tests are carried out by Ansari-Bradley nonparametric test here. Whether the impact is positive or negative can be directly got from the tests above.
 
-When treating turning crash counts into binary variable as 1: crash, 0: nocrash, Pearson Chi-square test is applied to check independence.
-
-For Intersection Type vs PDO crash, only the 4st vs 4sg group pass the same dispersion test. For 3st vs 4st and 3st vs 4sg, 95\% Bootstrap Confidence Interval of difference of sample mean is calculate instead of testing. The result is shown in the table below.
-
-\begin{table}[H]
-\begin{tabular}{|c|c|c|c|}
-\hline
-Difference of Mean  & Lower Bound & Upper Bound & Contain 0 \\
-\hline
-3ST-4ST & -1.652 & -0.019 & F(not obvious) \\
-\hline
-3ST-4SG   & -6.670  & -4.112  & F \\
-\hline
-\end{tabular}
-\end{table}
+When treating turning crash counts into binary variable as 1: crash, 0: nocrash, Pearson Chi-square test is applied to check independence.}}
 
 Firstly, we can see obviously that all PDO crashing number for three kinds of intersections are not normal data, so our test is based on Mann-Whitney test.
 
@@ -489,45 +476,6 @@ Total    & 385  & 61  & 102  & 548 \\
 
 And finally both of these two Pearson tests show dependences.
 
-For 3 paired sample in KA crash, none of the pairs pass the Ansari-Bradley test. Hence, we construct Bootstrap Confidence Interval here.
-
-\begin{table}[H]
-\begin{tabular}{|c|c|c|c|}
-\hline
-Difference of Mean  & Lower Bound & Upper Bound & Contain 0 \\
-\hline
-3ST-4ST & -1.180 & 0.014 & Y(not obvious) \\
-\hline
-3ST-4SG   & -0.267  & -0.078  & F(not obvious) \\
-\hline
-4ST-4SG   & -0.209  & 0.047 & Y(not obvious) \\
-\hline
-\end{tabular}
-\end{table}
-
-For 3 paired sample in BC crash, none of the pairs pass the Ansari-Bradley test. Hence, we also construct Bootstrap Confidence Interval here.
-
-\begin{table}[H]
-\begin{tabular}{|c|c|c|c|}
-\hline
-Difference of Mean  & Lower Bound & Upper Bound & Contain 0 \\
-\hline
-3ST-4ST & -0.716 & 0.070 & Y(not obvious) \\
-\hline
-3ST-4SG   & -2.376  & -1.361  & F \\
-\hline
-4ST-4SG   & -2.164  & -0.930 & F \\
-\hline
-\end{tabular}
-\end{table}
-
-From the discussion between intersection type and crash counts, we can draw the follow conclusion:
-
-(1) There are dependent between intersection type and crash counts for all 3 types of crashes by Pearson tests.
-
-(2) By Mann-whitney test, for PDO, 4SG intersection is more likely to happen PDO crash than 4ST intersection.
-
-(3) As there is still randomness in Bootstrap method, some intervals constructed above have bounds close to 0, which may change sign in other realizations. Hence, here we take |x|>0.1 as an obvious difference from 0. From the tables above, we can claim that for PDO, 4SG has obvious more crash than 3ST; for BC, 4SG has obvious more crash than 3ST and 4ST; for KA, there is no obvious pattern. However, all intervals constructed have the tendency to be at the left side of 0, which infers that there might be a tendency that the unit number of crash in all 3 types of crash follow the order 3ST<4ST<4SG.
 
 \subsection{Two v.s. crashing independence test}
 
@@ -659,8 +607,6 @@ where $q_A$ represents the median of AADT major in PDO noncrash situation in 4sg
 {q_A} = {q_B}.
 \end{equation*}
 
-By same Mann-Whitney tests, for KA crash, AADT-Major only has significant effect at 3ST intersection. Larger AADT-Major intersection has higher crash rate. For BC crash, significant impact is observed both in 3ST and 4ST. In both case, larger AADT-Major is related to higher crash rate.
-
 \subsubsection{Crossing type + AADT minor for PDO crash}
 
 With the same partition made for AADT major,we also carry out a Shapiro normality test on these 6 sample pieces for AADT minor, however, few of them pass the test. Hence, once again, we need to turn to the Mann-Whitney test.
@@ -722,236 +668,16 @@ where $q_A$ represents the median of AADT minor in PDO noncrash situation in 4sg
 {q_A} = {q_B}.
 \end{equation*}
 
-By same Mann-Whitney tests, for KA crash, no significant effects is observed. For BC crash, positive effect on crash rate is observed in 3ST intersection. For 4ST group, the AADT-Minor in crash and noncrash group do not pass the same dispersion test. We again carry out the Bootstrap Confidence Interval method on the difference of sample mean. The 95\% interval for mean(crash)-mean(noncrash) is (100,1051.25). Hence, there is obvious positive effect of AADT-Minor on crash rate in 4ST.
+
 
 \section{Discussion of Results and Concluding Remarks}
 
-\subsection{Conclusions}
-
-From all the discussion above, we can draw the conclusion below:
-
-For Intersection Type vs crash counts only: Intersection type affects the probability of all 3 types of crash. There is a tendency that the crash probability in 3 types of intersection follows that order 3ST<4ST<4SG. The tendency is obvious in PDO,4SG vs 4ST and BC, 3ST vs 4ST vs 4SG. We may recommend to pay much more attention when coming across a 4SG intersection.
-
-Controlling intersection type:
-
-(1) Lighting:
-
-(2) Turns:
-
-(3) AADT-Major and AADT-Minor: Only positive impact of AADT-Major and AADT-Minor is observed on crash rate. For PDO, 3ST intersection with higher AADT-Major level or higher AADT-Minor level tends to has higher crash rate. For KA, same impact observed in 3ST. For BC, such positive effect occurs in 3ST and 4ST. The result infers that controlling AADT at a lower level might be a good method to reduce crash rate at 3ST and 4ST intersection, but might not help for 4SG intersections.
-
-
-\subsection{Further Exploring}
-
-For all the analysis above, we mainly apply 3 types of technique: data visualization, confidence interval construction and hypothesis testing on location and scale. Here are some other probable methods that can be applied to explore the data set.
-
-(1) Logistic regression: All the methods used can hardly predict the crash rate or crash counts. Also, the impact of certain variable when controlling 2 or more other variables cannot be discusses with current technique. Since we have counts as response variable and also many 0 in the data set, logistic models are a good option here to fit the data, either with normal family(predict crash rate) or with poisson/negative-binomial family(predict crash counts). Then we can get prediction of crash and also further explore the effect of regressors in the full model.
-
-(2)Sufficient dimension reduction: There might exist multicollinearity in the variables.
-
-
-
-\subsection{Further discussion}
-
-In statistical fields, there is a special topic - sufficient dimension reduction - which is used to select most relative variable to the response. Mathematically, for $Y$ as response and $X$ as a $p-$dimension predictor, we'd like to find a $p \times d\left( {d < p} \right)$ vector $\eta $ such that
-
-\begin{equation*}
-Y \bot X\left| {{\eta ^T}X}. \right.
-\end{equation*}
-
-where ${\eta ^T}X$ is denoted as the central subspace ${S_{Y\left| X \right.}}$. Proposed by Li et. al.\cite{li2011principal}, the principal support vector machines is a popular sufficient dimension reduction method. The estimation procedure can be divided into three steps:
-
-\begin{itemize}
-	\item 1. Compute the sample mean $\bar X$ and sample variance matrix $\hat \Sigma $.
-	\item 2. (Optimization) Let ${q_r},r = 1, \ldots ,h - 1$ be $h-1$ dividing points,equally spaced sample percentiles of $\left\{ {{Y_1}, \ldots ,{Y_n}} \right\}$. Let 
-	\begin{equation*}
-	\tilde Y_i^r = I\left( {{Y_i} > {q_r}} \right) - I\left( {{Y_i} \le {q_r}} \right).
-	\end{equation*}
-	Then let $\left( {{{\hat \beta }_r},{{\hat t}_r}} \right)$ be the minimizer of 
-	\begin{equation*}
-	{\beta ^T}\hat \sum \beta  + \lambda {E_n}{\left\{ {1 - {{\tilde Y}^r}\left[ {{{\left( {X - \bar X} \right)}^T}\beta  - t} \right]} \right\}^ + }.
-	\end{equation*}
-	\item 3. (Estimation)  Let ${\hat v_1}, \ldots ,{\hat v_d}$ be the d leading eigenvectors of matrix
-	\begin{equation*}
-	{\hat M_n} = \sum\nolimits_{r = 1}^{h - 1} {{{\hat \beta }_r}\hat \beta _r^T}.
-	\end{equation*}
-	Then we use subspace spanned by $\hat v = \left( {{{\hat v}_1}, \ldots ,{{\hat v}_d}} \right)$ to estimate ${S_{Y\left| X \right.}}$.
-\end{itemize}
-
-By the way, proposed by Xia et. al.\cite{xia2015consistently}, the eigenvector number $d$ can be selected by the jump ratio of eigenvalues. That is, if ${\lambda _1}, \ldots ,{\lambda _p}$ is $p$ eigenvalues of the matrix in descending order, then we forming the $p-1$ jump ratio by
-\begin{equation*}
-\left\{ {{J_1}, \ldots ,{J_{p - 1}}} \right\},{J_i} = \frac{{{\lambda _i}}}{{{\lambda _{i + 1}}}},
-\end{equation*}
-
-then we select $d$ as
-
-\begin{equation*}
-d = \mathop {\arg \max }\limits_i {J_i}.
-\end{equation*}
-
-
-
-Geometrically, the following figure shows the principal. 
-
-\begin{figure}[H]
-\centering
-\includegraphics[width=3in]{image/psvm.png}
-\small
-\caption{2 dimension SVM surfaces and their normal line}
-\end{figure}
-
-In the figure, if the colors represent the value, from red (4th quantile part) to black (1st quantile part), the value $Y$ descends. Then, three black surface is the SVM boundary for its four quantile parts. Finally, the green line - the normal direction of its SVM boundary - can perfectly delineate a path (forming by the weights of $x_1$ and $x_2$) where the $Y$ value grows fastest.
-
-\par
-
-Implementing this algorithm by Python (code is in Appendix 2), we get the central subspace for PDO crashing number as response:
-
-\begin{lstlisting}
-array([[ 0.00000000e+00, -6.28336625e-03, -3.44987939e-04, -1.54542490e-04],
-       [ 9.99807242e-01, -1.96296091e-02, -3.32648777e-04, -1.63439760e-04],
-       [-9.52640689e-04, -2.96027569e-02, -9.24611159e-01, -3.78741274e-01],
-       [-1.67939885e-04, -7.34446402e-03, -2.37055602e-01, 6.33323237e-01],
-       [-7.19757840e-05, -6.52082837e-03, -2.96534802e-01, 6.74871829e-01],
-       [ 1.96096296e-02,  9.99300962e-01, -3.10761591e-02, -2.16533571e-03]])
-\end{lstlisting}
-
-\par
-
-It shows that for PDO crashing number, there are totally 4 factors which may significantly affects it. The AADT major holds a positive effect ( 9.99807242e-01) to PDO crash; The skewed angle holds a positve effect (9.99300962e-01) to PDO crash; The lighting holds a negative effect (-9.24611159e-01) to PDO crash; The right-turn approach holds positive effect (6.74871829e-01) to PDO crash.
-
-\par
-
-Similarly, for BC crashing number as response, the central subspace will be:
-
-\begin{lstlisting}
-array([[ 4.00994989e-05,  1.88638392e-05,  2.29261861e-04],
-       [-2.92592349e-05, -2.48004596e-06, -4.20608685e-05],
-       [-9.87266764e-01, -1.21357177e-02, -1.58483896e-01],
-       [-1.53212888e-01,  3.38178083e-01,  9.28526411e-01],
-       [ 4.23293850e-02,  9.41003883e-01, -3.35737815e-01],
-       [-6.19423106e-03,  1.07378434e-05, -1.27455844e-03]])
-\end{lstlisting}
-
-It can also reveal three key and relative factor: lighting for negative effect, left-turn and right-turn approaches for positive effect. And certainly we can do the same procedure on the KA crashing easily, so we omit it here.
 
 \section{Appendix}
 
-\subsection{Extra Plots}
 
-Extra support plots for AADT-Major:
+\section{References}
 
-\begin{figure}[H]
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/extra1.png}
-\small
-\end{minipage}
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/extra2.png}
-\small
-\end{minipage}
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/extra3.png}
-\small
-\end{minipage}
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/extra4.png}
-\small
-\end{minipage}
-\caption{Extra plots for AADT-Major}
-\end{figure}
-
-Extra support plots for AADT-Minor:
-
-\begin{figure}[H]
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/extra5.png}
-\small
-\end{minipage}
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/extra6.png}
-\small
-\end{minipage}
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/extra7.png}
-\small
-\end{minipage}
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/extra8.png}
-\small
-\end{minipage}
-\caption{Extra plots for AADT-Minor}
-\end{figure}
-
-Extra support plots for Skew Angle:
-
-\begin{figure}[H]
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/extra9.png}
-\small
-\end{minipage}
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/extra10.png}
-\small
-\end{minipage}
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/extra11.png}
-\small
-\end{minipage}
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/extra12.png}
-\small
-\end{minipage}
-\caption{Extra plots for Skew-Angle}
-\end{figure}
-
-Extra support plots for Lighting:
-\begin{figure}[H]
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/LIGHTING_all_KA.png}
-\small
-\end{minipage}
-\begin{minipage}[t]{0.5\linewidth}
-\centering
-\includegraphics[width=3in]{image/LIGHTING_all_BC.png}
-\small
-\end{minipage}
-\caption{Extra plots for Lighting}
-\end{figure}
-
-
-\subsection{R codes}
-
-
-
-\begin{thebibliography}{}
-
-\bibitem{li2011principal}
-\textsc{Li, Bing} \& \textsc{Artemiou, Andreas} \& \textsc{Li, Lexin}(2011).
-\newblock Principal support vector machines for linear and nonlinear sufficient dimension reduction.
-\newblock \textit{The Annals of Statistics.}
-\textbf{3182--3210}.
-
-\bibitem{xia2015consistently}
-\textsc{Xia, Qiang} \& \textsc{Xu, Wangli} \& \textsc{Zhu, Lixing}(2015).
-\newblock Consistently determining the number of factors in multivariate volatility modeling.
-\newblock \textit{Statistica Sinica.}
-\textbf{1025--1044}.
-
-
-\end{thebibliography}
 
 
 %\begin{figure}[h] % [h] forces the figure to be output where it is defined in the code (it suppresses floating)

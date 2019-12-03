@@ -11,6 +11,12 @@ st3_pdo = dat_1$PDO
 st4_pdo = dat_2$PDO
 sg4_pdo = dat_3$PDO
 
+### Check same dispersion assumption for Mann Whitney test: only st4 vs sg4 group satisfied
+
+ansari.test(st3_pdo,st4_pdo)
+ansari.test(st4_pdo,sg4_pdo)
+ansari.test(st3_pdo,sg4_pdo)
+
 ### Check st3_pdo with st4_pdo:
 
 library(magrittr)
@@ -28,7 +34,22 @@ T_ <- abs((W-E_0_W)/sqrt(var_0_W))
 Z_crit <- qnorm(0.025, 0, 1, lower.tail = F)
 abs(T_) > Z_crit
 
-### It returns true, so we think there is difference.
+### Check by 95% boostrap CI. 95% confident CI does not contain 0 and both bounds are negative
+bootci <- function(x,y){
+  n1 = length(x)
+  n2 = length(y)
+  dif = NULL
+  for(i in 1:1000){
+    x1 = base::sample(x,n1,replace=TRUE)
+    x2 = base::sample(y,n2,replace=TRUE)
+    dif = c(dif, mean(x1)-mean(x2))
+  }
+  return(quantile(dif,prob=c(0.025,0.975)))
+}
+set.seed(1)
+bootci(st3_pdo,st4_pdo)
+
+### It returns true, so we think there is difference. 
 
 ### Check st4_pdo with sg4_pdo:
 
@@ -66,6 +87,10 @@ abs(T_) > Z_crit
 
 ### Also return true, so we think there is difference.
 
+### Check by 95% boostrap CI. 95% confident CI does not contain 0 and both bounds are negative
+set.seed(1)
+bootci(st3_pdo,sg4_pdo)
+
 
 ### next, we use the categorical analysis perspective to verify the independence holds false.
 
@@ -92,6 +117,12 @@ st3_ka = dat_1$KA
 st4_ka = dat_2$KA
 sg4_ka = dat_3$KA
 
+### Check same dispersion assumption for Mann Whitney test
+
+ansari.test(st3_ka,st4_ka)
+ansari.test(st4_ka,sg4_ka)
+ansari.test(st3_ka,sg4_ka)
+
 ### Check st3_ka with st4_ka:
 
 X <- data.frame(value = data.matrix(st3_ka), label = "st3") 
@@ -109,6 +140,10 @@ Z_crit <- qnorm(0.025, 0, 1, lower.tail = F)
 abs(T_) > Z_crit
 
 ### It returns true, so we think there is difference.
+
+### Check by 95% boostrap CI. 95% confident CI does contain
+set.seed(1)
+bootci(st3_ka,st4_ka)
 
 ### Check st4_ka with sg4_ka:
 
@@ -128,6 +163,10 @@ abs(T_) > Z_crit
 
 ### Then, this time, we found that the st4 and sg4 doesn't pose a strong effect on the ka crash number.
 
+### Check by 95% boostrap CI. 95% confident CI does contain 0.
+set.seed(1)
+bootci(st4_ka,sg4_ka)
+
 ### Check st3_pdo with sg4_pdo:
 
 X <- data.frame(value = data.matrix(st3_ka), label = "st3") 
@@ -146,6 +185,9 @@ abs(T_) > Z_crit
 
 ### Returns true, so we think there is difference.
 
+### Check by 95% boostrap CI. 95% confident CI does not contain 0.
+set.seed(1)
+bootci(st3_ka,sg4_ka)
 
 ### next, we use the categorical analysis perspective to verify the independence holds false.
 
@@ -172,6 +214,11 @@ st3_bc = dat_1$BC
 st4_bc = dat_2$BC
 sg4_bc = dat_3$BC
 
+### Check same dispersion assumption:
+ansari.test(st3_bc,st4_bc)
+ansari.test(st4_bc,sg4_bc)
+ansari.test(st3_bc,sg4_bc)
+
 ### Check st3_bc with st4_bc:
 
 X <- data.frame(value = data.matrix(st3_bc), label = "st3") 
@@ -190,6 +237,10 @@ abs(T_) > Z_crit
 
 ### It returns true, so we think there is difference.
 
+### Check by 95% boostrap CI. 95% confident CI does not contain 0.
+set.seed(1)
+bootci(st3_bc,st4_bc)
+
 ### Check st4_bc with sg4_bc:
 
 X <- data.frame(value = data.matrix(st4_bc), label = "st4") 
@@ -207,6 +258,9 @@ Z_crit <- qnorm(0.025, 0, 1, lower.tail = F)
 abs(T_) > Z_crit
 
 ### Also return true, so we think there is difference.
+### Check by 95% boostrap CI. 95% confident CI does not contain 0.
+set.seed(1)
+bootci(st4_bc,sg4_bc)
 
 ### Check st3_bc with sg4_bc:
 
@@ -225,6 +279,10 @@ Z_crit <- qnorm(0.025, 0, 1, lower.tail = F)
 abs(T_) > Z_crit
 
 ### Returns true, so we think there is difference.
+
+### Check by 95% boostrap CI. 95% confident CI does not contain 0.
+set.seed(1)
+bootci(st3_bc,sg4_bc)
 
 
 ### next, we use the categorical analysis perspective to verify the independence holds false.
@@ -393,7 +451,7 @@ for (i in 1:2){
 Q >= qchisq(0.95,df=(2*1))
 
 ### Cross type + AADT major
-########################################################################################################################################
+##PDO########################################################################################################################################
 
 st3_aadt_m_pdocrash = dat_1[dat_1$PDO>0,c("AADT_MAJOR")]
 st3_aadt_m_pdonocrash = dat_1[dat_1$PDO==0,c("AADT_MAJOR")]
@@ -541,7 +599,7 @@ abs(T_) > Z_crit
 
 
 
-
+### For BC and KA with AADT, just applie the codes above.
 
 
 

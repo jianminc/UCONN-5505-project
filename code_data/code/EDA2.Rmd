@@ -298,7 +298,7 @@ getcatgraph <- function(v,crash){
     ggtitle(c(paste("Distribution of overall",as.character(crash),"Counts with",as.character(v))))
   
   g <- arrangeGrob(g1,g2,nrow=2) 
-  ggsave(file=paste("./../../image/",as.character(v),"_all_",as.character(crash),".png",sep=""), g)
+  ggsave(file=paste("./../../report/image/",as.character(v),"_all_",as.character(crash),".png",sep=""), g)
   
   
   g1 = dat_all %>% filter(!!sym(v)==0,INTERTYPE=='3ST') %>% group_by(!!sym(crash)) %>% summarise(count=n()) %>% mutate(percent=round(count/sum(count),2)) %>% ggplot(aes(x=!!sym(crash),y=percent))+
@@ -309,7 +309,7 @@ getcatgraph <- function(v,crash){
     ggtitle(paste("Distribution of 3ST",as.character(crash),"Counts with",as.character(v)))
   
   g <- arrangeGrob(g1,g2,nrow=2)
-  ggsave(file=paste("./../../image/",v,"_3ST_",crash,".png",sep=""), g)
+  ggsave(file=paste("./../../report/image/",v,"_3ST_",crash,".png",sep=""), g)
   
   g1 = dat_all %>% filter(!!sym(v)==0,INTERTYPE=='4ST') %>% group_by(!!sym(crash)) %>% summarise(count=n()) %>% mutate(percent=round(count/sum(count),2)) %>% ggplot(aes(x=!!sym(crash),y=percent))+
     geom_bar(stat='identity')+coord_flip()+xlim(c(-1,a))+ylim(c(0,b))+
@@ -319,7 +319,7 @@ getcatgraph <- function(v,crash){
     ggtitle(paste("Distribution of 4ST",crash,"Counts with",v))
   
   g <- arrangeGrob(g1,g2,nrow=2)
-  ggsave(file=paste("./../../image/",v,"_4ST_",crash,".png",sep=""), g)
+  ggsave(file=paste("./../../report/image/",v,"_4ST_",crash,".png",sep=""), g)
   
   g1 = dat_all %>% filter(!!sym(v)==0,INTERTYPE=='4SG') %>% group_by(!!sym(crash)) %>% summarise(count=n()) %>% mutate(percent=round(count/sum(count),2)) %>% ggplot(aes(x=!!sym(crash),y=percent))+
     geom_bar(stat='identity')+coord_flip()+xlim(c(-1,a))+ylim(c(0,b))+
@@ -329,7 +329,7 @@ getcatgraph <- function(v,crash){
     ggtitle(paste("Distribution of 4SG",crash,"Counts with",v))
   
   g <- arrangeGrob(g1,g2,nrow=2)
-  ggsave(file=paste("./../../image/",v,"_4SG_",crash,".png",sep=""), g)
+  ggsave(file=paste("./../../report/image/",v,"_4SG_",crash,".png",sep=""), g)
   
 }
 ```  
