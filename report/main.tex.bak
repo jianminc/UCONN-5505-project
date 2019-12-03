@@ -70,8 +70,8 @@ In this paper, we are going to explore and confirm the following questions:
 
 \begin{itemize}
 	\item Do these different types of intersection affect the number of crashes? (Regardless of other features.)
-	\item If we control the types of intersection, whether other features (e.g. skewed angle, lighting, approaching turns, AADT major and minor) affect the number of crashes? 
-	\item And we may want to explore what kind of relationship (negative or positive) between the features we mentioned previously with the number of crashes. 
+	\item If we control the types of intersection, whether other features (e.g. skewed angle, lighting, approaching turns, AADT major and minor) affect the number of crashes?
+	\item And we may want to explore what kind of relationship (negative or positive) between the features we mentioned previously with the number of crashes.
 \end{itemize}
 
 \subsection{Qualitative an Quantitative}
@@ -84,7 +84,7 @@ Quantitative: AADT major, AADT minor, skew angle, PDO crashing number, KA crashi
 
 
 \section{Exploratory Data Analysis}
-We first rearranged the 3 data set and combined them into 1 single data set. One column is added to specify the intersection type, denoted as INTERTYPE. It has 3 values, "3ST","4ST" and "4SG". Then we have 12 variables and 548 observations in total. "INTERSECTION-ID" and "ID" will not be analysed here since we are not interested in specific intersection. In the rest 10 variables, "AADT-MAJOR", "AADT-MINOR", "SKEW-ANGLE" are continuous quantitative variables. "PDO","KA" and "BC" are discrete  quantitative variables. "LIGHTING","APPROACH-LEFTTURN","APPROACH-RIGHTTURN", and "INTERTYPE" can be used as categorical qualitative variables. We are interested in the relationship between "PDO", "KA", "BC" and other variables.
+We first rearranged the 3 data set and combined them into 1 single data set. One column is added to specify the intersection type, denoted as INTERTYPE. It has 3 values, "3ST","4ST" and "4SG". Then we have 548 observations in total.
 
 A new categorical binary variable is constructed with "1" standing for there exists crash and "0" standing for no crash. This variable is denoted as "crash" and it is used as a candidate response variable when we want to analyze the data with mixed types of crash.
 
@@ -281,11 +281,16 @@ We get the following guess from the EDA part and the verification will be shown 
 
 5. AADT-Major and AADT-Minor is at a higher level in intersections with crash for whole data set. When controlling intersection, However, for AADT-Major, the tendency is only significant in 3ST group with PDO and BC. For AADT-Minor, opposite significant pattern occurs in 4SG group of PDO crash.
 
-6. Skew angle may not act as a vital factor to crash. 
+6. Skew angle may not act as a vital factor to crash.
 
 \section{Statistical Inference}
 
 \subsection{One v.s. PDO crashing independence test}
+
+{\color{red}{We first test the relationship between crash and intersection type for 3 types of crash separately. Then we need to conduct 3 '2 vs 2' tests for each crash type. To get overall significant level for each crash type to be 5\%, in each single test, the significant level will be adjusted as 5/3
+\%. We mainly use 3 types of methods here. When treating crash count as qualitative, normality assumption and same dispersion assumption are checked in each paired sample. Since none of the pairs satisfies normal assumption, we use Mann-Whitney test when paired sample has same dispersion. When we get different dispersion, we calculate Bootstrap confidence interval for difference of sample mean to check whether the interval contains 0 or not. If the interval contains 0, we infer that there is not significant difference on the sample mean. The same dispersion tests are carried out by Ansari-Bradley nonparametric test here. Whether the impact is positive or negative can be directly got from the tests above.
+
+When treating turning crash counts into binary variable as 1: crash, 0: nocrash, Pearson Chi-square test is applied to check independence.}}
 
 Firstly, we can see obviously that all PDO crashing number for three kinds of intersections are not normal data, so our test is based on Mann-Whitney test.
 
@@ -409,7 +414,7 @@ Total    & 385  & 61  & 102  & 548 \\
 \end{tabular}
 \end{table}
 
-Then our hypothesis will be 
+Then our hypothesis will be
 
 \begin{equation*}
 \begin{array}{l}

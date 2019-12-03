@@ -123,7 +123,7 @@ For the BC(possible injury or non-incapacitating injury) crashes, over one-half(
 \includegraphics[width=3in]{image/p121_BC.png}
 \small
 \end{minipage}
-\caption{Pie chart of PDO}
+\caption{Pie chart of BC}
 \end{figure}
 
 For the KA(fatal or incapacitating injury) crashes, only 0,1 and 2 crashes are observed. We can infer that Poisson or Negative Binomial distribution may not be suitable to fit the KA data. Quite similar to the conclusion above, 4SG and 4ST types have larger proportion of intersection with crashes.
@@ -287,10 +287,23 @@ We get the following guess from the EDA part and the verification will be shown 
 
 \subsection{One v.s. PDO crashing independence test}
 
-{\color{red}{We first test the relationship between crash and intersection type for 3 types of crash separately. Then we need to conduct 3 '2 vs 2' tests for each crash type. To get overall significant level for each crash type to be 5\%, in each single test, the significant level will be adjusted as 5/3
-\%. We mainly use 3 types of methods here. When treating crash count as qualitative, normality assumption and same dispersion assumption are checked in each paired sample. Since none of the pairs satisfies normal assumption, we use Mann-Whitney test when paired sample has same dispersion. When we get different dispersion, we calculate Bootstrap confidence interval for difference of sample mean to check whether the interval contains 0 or not. If the interval contains 0, we infer that there is not significant difference on the sample mean. The same dispersion tests are carried out by Ansari-Bradley nonparametric test here. Whether the impact is positive or negative can be directly got from the tests above.
+We first test the relationship between crash and intersection type for 3 types of crash separately. We mainly use 3 types of methods here. When treating crash count as qualitative, normality assumption and same dispersion assumption are checked in each paired sample. Since none of the pairs satisfies normal assumption, we use Mann-Whitney test when paired sample has same dispersion. When we get different dispersion, we calculate Bootstrap confidence interval for difference of sample mean to check whether the interval contains 0 or not. If the interval contains 0, we infer that there is not obvious difference on the sample mean. Re-sampling time is set as 1000 in Bootstrap method. The same dispersion tests are carried out by Ansari-Bradley nonparametric test here. Whether the impact is positive or negative can be directly got from the tests above.
 
-When treating turning crash counts into binary variable as 1: crash, 0: nocrash, Pearson Chi-square test is applied to check independence.}}
+When treating turning crash counts into binary variable as 1: crash, 0: nocrash, Pearson Chi-square test is applied to check independence.
+
+For Intersection Type vs PDO crash, only the 4st vs 4sg group pass the same dispersion test. For 3st vs 4st and 3st vs 4sg, 95\% Bootstrap Confidence Interval of difference of sample mean is calculate instead of testing. The result is shown in the table below.
+
+\begin{table}[H]
+\begin{tabular}{|c|c|c|c|}
+\hline
+Difference of Mean  & Lower Bound & Upper Bound & Contain 0 \\
+\hline
+3ST-4ST & -1.652 & -0.019 & F(not obvious) \\
+\hline
+3ST-4SG   & -6.670  & -4.112  & F \\
+\hline
+\end{tabular}
+\end{table}
 
 Firstly, we can see obviously that all PDO crashing number for three kinds of intersections are not normal data, so our test is based on Mann-Whitney test.
 
@@ -476,6 +489,45 @@ Total    & 385  & 61  & 102  & 548 \\
 
 And finally both of these two Pearson tests show dependences.
 
+For 3 paired sample in KA crash, none of the pairs pass the Ansari-Bradley test. Hence, we construct Bootstrap Confidence Interval here.
+
+\begin{table}[H]
+\begin{tabular}{|c|c|c|c|}
+\hline
+Difference of Mean  & Lower Bound & Upper Bound & Contain 0 \\
+\hline
+3ST-4ST & -1.180 & 0.014 & Y(not obvious) \\
+\hline
+3ST-4SG   & -0.267  & -0.078  & F(not obvious) \\
+\hline
+4ST-4SG   & -0.209  & 0.047 & Y(not obvious) \\
+\hline
+\end{tabular}
+\end{table}
+
+For 3 paired sample in BC crash, none of the pairs pass the Ansari-Bradley test. Hence, we also construct Bootstrap Confidence Interval here.
+
+\begin{table}[H]
+\begin{tabular}{|c|c|c|c|}
+\hline
+Difference of Mean  & Lower Bound & Upper Bound & Contain 0 \\
+\hline
+3ST-4ST & -0.716 & 0.070 & Y(not obvious) \\
+\hline
+3ST-4SG   & -2.376  & -1.361  & F \\
+\hline
+4ST-4SG   & -2.164  & -0.930 & F \\
+\hline
+\end{tabular}
+\end{table}
+
+From the discussion between intersection type and crash counts, we can draw the follow conclusion:
+
+(1) There are dependent between intersection type and crash counts for all 3 types of crashes by Pearson tests.
+
+(2) By Mann-whitney test, for PDO, 4SG intersection is more likely to happen PDO crash than 4ST intersection.
+
+(3) As there is still randomness in Bootstrap method, some intervals constructed above have bounds close to 0, which may change sign in other realizations. Hence, here we take |x|>0.1 as an obvious difference from 0. From the tables above, we can claim that for PDO, 4SG has obvious more crash than 3ST; for BC, 4SG has obvious more crash than 3ST and 4ST; for KA, there is no obvious pattern. However, all intervals constructed have the tendency to be at the left side of 0, which infers that there might be a tendency that the unit number of crash in all 3 types of crash follow the order 3ST<4ST<4SG.
 
 \subsection{Two v.s. crashing independence test}
 
@@ -607,6 +659,8 @@ where $q_A$ represents the median of AADT major in PDO noncrash situation in 4sg
 {q_A} = {q_B}.
 \end{equation*}
 
+By same Mann-Whitney tests, for KA crash, AADT-Major only has significant effect at 3ST intersection. Larger AADT-Major intersection has higher crash rate. For BC crash, significant impact is observed both in 3ST and 4ST. In both case, larger AADT-Major is related to higher crash rate.
+
 \subsubsection{Crossing type + AADT minor for PDO crash}
 
 With the same partition made for AADT major,we also carry out a Shapiro normality test on these 6 sample pieces for AADT minor, however, few of them pass the test. Hence, once again, we need to turn to the Mann-Whitney test.
@@ -668,12 +722,135 @@ where $q_A$ represents the median of AADT minor in PDO noncrash situation in 4sg
 {q_A} = {q_B}.
 \end{equation*}
 
+By same Mann-Whitney tests, for KA crash, no significant effects is observed. For BC crash, positive effect on crash rate is observed in 3ST intersection. For 4ST group, the AADT-Minor in crash and noncrash group do not pass the same dispersion test. We again carry out the Bootstrap Confidence Interval method on the difference of sample mean. The 95\% interval for mean(crash)-mean(noncrash) is (100,1051.25). Hence, there is obvious positive effect of AADT-Minor on crash rate in 4ST.
 
 
 \section{Discussion of Results and Concluding Remarks}
 
+\subsection{Conclusions}
+
+From all the discussion above, we can draw the conclusion below:
+
+For Intersection Type vs crash counts only: Intersection type affects the probability of all 3 types of crash. There is a tendency that the crash probability in 3 types of intersection follows that order 3ST<4ST<4SG. The tendency is obvious in PDO,4SG vs 4ST and BC, 3ST vs 4ST vs 4SG. We may recommend to pay much more attention when coming across a 4SG intersection.
+
+Controlling intersection type:
+
+(1) Lighting:
+
+(2) Turns:
+
+(3) AADT-Major and AADT-Minor: Only positive impact of AADT-Major and AADT-Minor is observed on crash rate. For PDO, 3ST intersection with higher AADT-Major level or higher AADT-Minor level tends to has higher crash rate. For KA, same impact observed in 3ST. For BC, such positive effect occurs in 3ST and 4ST. The result infers that controlling AADT at a lower level might be a good method to reduce crash rate at 3ST and 4ST intersection, but might not help for 4SG intersections.
+
+
+\subsection{Further Exploring}
+
+For all the analysis above, we mainly apply 3 types of technique: data visualization, confidence interval construction and hypothesis testing on location and scale. Here are some other probable methods that can be applied to explore the data set.
+
+(1) Logistic regression: All the methods used can hardly predict the crash rate or crash counts. Also, the impact of certain variable when controlling 2 or more other variables cannot be discusses with current technique. Since we have counts as response variable and also many 0 in the data set, logistic models are a good option here to fit the data, either with normal family(predict crash rate) or with poisson/negative-binomial family(predict crash counts). Then we can get prediction of crash and also further explore the effect of regressors in the full model.
+
+(2)Sufficient dimension reduction: There might exist multicollinearity in the variables.
+
+
 
 \section{Appendix}
+
+\subsection{Extra Plots}
+
+Extra support plots for AADT-Major:
+
+\begin{figure}[H]
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/extra1.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/extra2.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/extra3.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/extra4.png}
+\small
+\end{minipage}
+\caption{Extra plots for AADT-Major}
+\end{figure}
+
+Extra support plots for AADT-Minor:
+
+\begin{figure}[H]
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/extra5.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/extra6.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/extra7.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/extra8.png}
+\small
+\end{minipage}
+\caption{Extra plots for AADT-Minor}
+\end{figure}
+
+Extra support plots for Skew Angle:
+
+\begin{figure}[H]
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/extra9.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/extra10.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/extra11.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/extra12.png}
+\small
+\end{minipage}
+\caption{Extra plots for Skew-Angle}
+\end{figure}
+
+Extra support plots for Lighting:
+\begin{figure}[H]
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/LIGHTING_all_KA.png}
+\small
+\end{minipage}
+\begin{minipage}[t]{0.5\linewidth}
+\centering
+\includegraphics[width=3in]{image/LIGHTING_all_BC.png}
+\small
+\end{minipage}
+\caption{Extra plots for Lighting}
+\end{figure}
+
+
+\subsection{R codes}
 
 
 \section{References}
