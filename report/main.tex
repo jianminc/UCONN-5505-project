@@ -181,6 +181,8 @@ There is similar problem with approach right-turn. And we also analyze based on 
 Further, as same patterns are observed with right-turn and left-turn, we combine these 2 variables into a new binary variable, denoted as "TURN", where "1" stands for there exists an approaching turn and "0" else. The follow graph is made with combined column. (Separated result is in Appendix.)
 
 \begin{table}[H]
+\caption{Intersection vs Turns}
+\centering
 \begin{tabular}{|c|c|c|c|}
 \hline
 Observations      & 3ST & 4ST & 4SG \\
@@ -294,6 +296,8 @@ When treating turning crash counts into binary variable as 1: crash, 0: nocrash,
 For Intersection Type vs PDO crash, only the 4st vs 4sg group pass the same dispersion test. For 3st vs 4st and 3st vs 4sg, 95\% Bootstrap Confidence Interval of difference of sample mean is calculate instead of testing. The result is shown in the table below.
 
 \begin{table}[H]
+\caption{Bootstrap Confidence Interval for PDO crash counts mean difference}
+\centering
 \begin{tabular}{|c|c|c|c|}
 \hline
 Difference of Mean  & Lower Bound & Upper Bound & Contain 0 \\
@@ -414,6 +418,8 @@ where $q_A$ represents the median number of PDO crashes of 3st intersection, $q_
 However, we can use another method - Pearson test in categorical analysis - to analyze this dependence. We fistly, transform the PDO crashing number into dummy variable. If the crashing number equals to 0, then we denote it as "noncrash", while if the crashing number is greater than 0, then we denote it as "crash". Thus, we can form the following table:
 
 \begin{table}[H]
+\caption{Intersection VS Crash}
+\centering
 \begin{tabular}{|c|c|c|c|c|}
 \hline
       & 3ST & 4ST & 4SG & Total \\
@@ -492,6 +498,8 @@ And finally both of these two Pearson tests show dependences.
 For 3 paired sample in KA crash, none of the pairs pass the Ansari-Bradley test. Hence, we construct Bootstrap Confidence Interval here.
 
 \begin{table}[H]
+\caption{Bootstrap Confidence Interval for KA crash counts mean difference}
+\centering
 \begin{tabular}{|c|c|c|c|}
 \hline
 Difference of Mean  & Lower Bound & Upper Bound & Contain 0 \\
@@ -508,6 +516,8 @@ Difference of Mean  & Lower Bound & Upper Bound & Contain 0 \\
 For 3 paired sample in BC crash, none of the pairs pass the Ansari-Bradley test. Hence, we also construct Bootstrap Confidence Interval here.
 
 \begin{table}[H]
+\caption{Bootstrap Confidence Interval for BC crash counts mean difference}
+\centering
 \begin{tabular}{|c|c|c|c|}
 \hline
 Difference of Mean  & Lower Bound & Upper Bound & Contain 0 \\
@@ -553,9 +563,9 @@ Total    & 299  & 70  & 16  & 50 & 10 & 1 & 89 & 13 & 548 \\
 
 Then, the Pearson test shows that there exists a dependence (codes are in Appendix 2.)
 
-\subsubsection{Crossing type + lighting for PDO crash}
+\subsubsection{Crossing type + Lighting vs Crash}
 
-As the lighting itself is a dummy variable, we can also form the following categorical table:
+As the lighting itself is a dummy variable, we can form the following categorical table:
 
 \begin{table}[H]
 \caption{Categorical table for PDO crash}
@@ -575,7 +585,50 @@ Total    & 150  & 235  & 23  & 38 & 24 & 78 & 548 \\
 
 Then, the Pearson test shows that there exists a dependence (codes are in Appendix 2.)
 
-\subsubsection{Crossing type + turns for PDO crash}
+Here we get the 3 2-by-2 contingency table between Lighting and crash with PDO crash, controlling intersection type. Here, '0' stands for no Lighting, '1' stands for Lighting.
+
+\begin{table}[H]
+\caption{Categorical table for PDO crash}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+      & 3ST\_0 & 3ST\_1 & Total & 4ST\_0 & 4ST\_1 & Total & 4SG\_0 & 4SG\_1 & Total \\
+\hline
+Nocrash & 74 & 99 & 173 & 5 & 13 & 18 & 6 & 12 & 18\\
+\hline
+Crash    & 76  & 136 & 212 & 18 & 25 & 43 & 28 & 66 & 94\\
+\hline
+Total    & 150  & 235 & 385 & 23  & 38 & 61 & 24 & 78 & 102\\
+\hline
+\end{tabular}
+\end{table}
+
+Same contingency tables are constructed be BC crash, KA crash and mixed crash type. Only table of KA, 4ST has cell counts less than 5. For this one, we apply Fisher-exact test. For others, we conduct individual Pearson test on each table. None of the above tests reject the Null hypothesis. P-value are shown in table below. When testing the overall effect across table, in the Mantel-Haenszel test cannot reject the Null in all 3 types of crashes. Hence, no dependence of Lighting and crash are observed here.
+
+When we mix 3 types of crash together and still construct 2-by-2 table across intersections, same results are generated.
+
+In all, we conclude that there is no effect of Lighting on crash when controlling intersection type.
+
+\begin{table}[H]
+\caption{P-value for Lighting vs Crash}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+p-value & 3ST & 4ST & 4SG  \\
+\hline
+PDO & 0.1657 & 0.3006 & 0.7644 \\
+\hline
+KA & 0.6484 & 0.0746 & 0.7509\\
+\hline
+BC & 0.247  & 0.4883 & 0.976 \\
+\hline
+Mixed & 0.0879 & 0.9494 & 0.5732 \\
+\hline
+\end{tabular}
+\end{table}
+
+
+\subsubsection{Crossing type + turns for Turn vs Crash}
 
 As the lighting itself is a dummy variable, we can also form the following categorical table:
 
@@ -598,7 +651,34 @@ Total   & 364  & 4 & 10 & 7 & 57 & 3 & 1 & 55 & 3 & 22 & 22 & 548\\
 
 where ``00'' represents no left approach or right approach; ``01'' represents no left approach but a right approach; ``10'' represents no right approach but left approach; ``11'' represents a left approach and right approach. Then, the Pearson test shows that there exists a dependence (codes are in Appendix 2.)
 
-\subsubsection{Crossing type + AADT major for PDO crash}
+Based on the results from the EDA part, we combine Approach Left Turn and Approach Right Turn as one dummy variable where 1 stands for there is an approach turn and 0 stands for not. Even then, approach turn existence is still a rare event in all intersection types. Also, if we continuing partitioning the data by crash type to form contingency table, we will have cells with extremely small counts equal to 0. Hence, we only analyses with mixed data with all crashes types mixed. We can form the following categorical table:
+
+\begin{table}[H]
+\caption{Categorical table for Turn vs Crash}
+\centering
+\tiny
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+counts  & 3ST\_0 & 3ST\_1 & Total & 4ST\_0 & 4ST\_1 & Total & 4SG\_0 & 4SG\_1 & Total \\
+\hline
+Nocrash & 145  & 9 & 154  & 13 & 0 & 13 & 9 & 9 & 18 \\
+\hline
+Crash   & 219  & 12 & 231 & 44 & 4 & 48 & 46 & 38 & 84 \\
+\hline
+Total   & 364  & 21 & 385 & 57 & 4 & 61 & 55 & 47 & 102 \\
+\hline
+Test    & Pearson & p-value & 0.7834 & Fisher & p-value & 0.5691 & Pearson & p-value & 0.713 \\
+\hline
+\end{tabular}
+\end{table}
+
+We do both Mantel-Haenszel test and 3 individual tests to test for independence between column and row.
+
+For the 3 individual test, for 3ST and 4SG, we have all cell counts larger than 5. We apply Pearson Chi-square tests and get p-value as 0.7834 and 0.713, which infers there is no dependency. For 4ST, we use the Fisher-exact test as counts are rather small and get p-value of 0.3729. The individual tests show no relationship between Crash and Turns.
+
+For the Mantel-Haenszel test, although we get the result that there is no overall effect of Turn on crash when controlling intersection type, the assumptions are not all satisfied due to small cell counts. But, it can still be some kind of evidence that there is no relationship.
+
+\subsubsection{Crossing type + AADT major for crash}
 
 We firstly partition the full samples into 6 parts: 3st intersection + crash; 3st intersection + noncrash; 4st intersection + crash; 4st intersection + noncrash; 4sg intersection + crash; 4sg intersection + noncrash. And we carry out a Shapiro normality test on these 6 sample pieces, however, few of them pass the test. Hence, once again, we need to turn to the Mann-Whitney test.
 
@@ -661,7 +741,7 @@ where $q_A$ represents the median of AADT major in PDO noncrash situation in 4sg
 
 By same Mann-Whitney tests, for KA crash, AADT-Major only has significant effect at 3ST intersection. Larger AADT-Major intersection has higher crash rate. For BC crash, significant impact is observed both in 3ST and 4ST. In both case, larger AADT-Major is related to higher crash rate.
 
-\subsubsection{Crossing type + AADT minor for PDO crash}
+\subsubsection{Crossing type + AADT minor for crash}
 
 With the same partition made for AADT major,we also carry out a Shapiro normality test on these 6 sample pieces for AADT minor, however, few of them pass the test. Hence, once again, we need to turn to the Mann-Whitney test.
 
@@ -734,24 +814,22 @@ For Intersection Type vs crash counts only: Intersection type affects the probab
 
 Controlling intersection type:
 
-(1) Lighting:
+(1) Lighting: Discussions only focus on data with 3 types of crashes mixed together due to lack of observations. There is no significant effect of Lighting on crash rate observed.
 
-(2) Turns:
+(2) Turns: Discussions only focus on data with 3 types of crashes mixed together due to lack of observations. There is no significant effect of Approach Turns on crash rate observed.
 
 (3) AADT-Major and AADT-Minor: Only positive impact of AADT-Major and AADT-Minor is observed on crash rate. For PDO, 3ST intersection with higher AADT-Major level or higher AADT-Minor level tends to has higher crash rate. For KA, same impact observed in 3ST. For BC, such positive effect occurs in 3ST and 4ST. The result infers that controlling AADT at a lower level might be a good method to reduce crash rate at 3ST and 4ST intersection, but might not help for 4SG intersections.
 
 
-\subsection{Further Exploring}
+\subsection{Further Discussion}
 
 For all the analysis above, we mainly apply 3 types of technique: data visualization, confidence interval construction and hypothesis testing on location and scale. Here are some other probable methods that can be applied to explore the data set.
 
-(1) Logistic regression: All the methods used can hardly predict the crash rate or crash counts. Also, the impact of certain variable when controlling 2 or more other variables cannot be discusses with current technique. Since we have counts as response variable and also many 0 in the data set, logistic models are a good option here to fit the data, either with normal family(predict crash rate) or with poisson/negative-binomial family(predict crash counts). Then we can get prediction of crash and also further explore the effect of regressors in the full model.
+\subsubsection{Logistic regression}
 
-(2)Sufficient dimension reduction: There might exist multicollinearity in the variables.
+All the methods used can hardly predict the crash rate or crash counts. Also, the impact of certain variable when controlling 2 or more other variables cannot be discusses with current technique. Since we have counts as response variable and also many 0 in the data set, logistic models are a good option here to fit the data, either with normal family(predict crash rate) or with poisson/negative-binomial family(predict crash counts). Then we can get prediction of crash and also further explore the effect of regressors in the full model.
 
-
-
-\subsection{Further discussion}
+\subsubsection{Sufficient dimension reduction}
 
 In statistical fields, there is a special topic - sufficient dimension reduction - which is used to select most relative variable to the response. Mathematically, for $Y$ as response and $X$ as a $p-$dimension predictor, we'd like to find a $p \times d\left( {d < p} \right)$ vector $\eta $ such that
 
@@ -763,11 +841,11 @@ where ${\eta ^T}X$ is denoted as the central subspace ${S_{Y\left| X \right.}}$.
 
 \begin{itemize}
 	\item 1. Compute the sample mean $\bar X$ and sample variance matrix $\hat \Sigma $.
-	\item 2. (Optimization) Let ${q_r},r = 1, \ldots ,h - 1$ be $h-1$ dividing points,equally spaced sample percentiles of $\left\{ {{Y_1}, \ldots ,{Y_n}} \right\}$. Let 
+	\item 2. (Optimization) Let ${q_r},r = 1, \ldots ,h - 1$ be $h-1$ dividing points,equally spaced sample percentiles of $\left\{ {{Y_1}, \ldots ,{Y_n}} \right\}$. Let
 	\begin{equation*}
 	\tilde Y_i^r = I\left( {{Y_i} > {q_r}} \right) - I\left( {{Y_i} \le {q_r}} \right).
 	\end{equation*}
-	Then let $\left( {{{\hat \beta }_r},{{\hat t}_r}} \right)$ be the minimizer of 
+	Then let $\left( {{{\hat \beta }_r},{{\hat t}_r}} \right)$ be the minimizer of
 	\begin{equation*}
 	{\beta ^T}\hat \sum \beta  + \lambda {E_n}{\left\{ {1 - {{\tilde Y}^r}\left[ {{{\left( {X - \bar X} \right)}^T}\beta  - t} \right]} \right\}^ + }.
 	\end{equation*}
@@ -791,7 +869,7 @@ d = \mathop {\arg \max }\limits_i {J_i}.
 
 
 
-Geometrically, the following figure shows the principal. 
+Geometrically, the following figure shows the principal.
 
 \begin{figure}[H]
 \centering
