@@ -640,8 +640,8 @@ sg4_noncrash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (da
                  nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$LIGHTING==1),]), 
                  nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$LIGHTING==0),]) + nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$LIGHTING==1),]))
 
-total = c(nrow(dat_3[ (dat_2$LIGHTING==0),]),
-          nrow(dat_3[ (dat_2$LIGHTING==1),]),
+total = c(nrow(dat_3[ (dat_3$LIGHTING==0),]),
+          nrow(dat_3[ (dat_3$LIGHTING==1),]),
           nrow(dat_3))
 
 sg4_crash = total - sg4_noncrash
