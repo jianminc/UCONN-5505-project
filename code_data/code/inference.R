@@ -597,10 +597,130 @@ T_ <- abs((W-E_0_W)/sqrt(var_0_W))
 Z_crit <- qnorm(0.025, 0, 1, lower.tail = F)
 abs(T_) > Z_crit
 
-
-
 ### For BC and KA with AADT, just applie the codes above.
 
+#####################################################################################
+### We now conduct set of 2*2 tables test for turns and lighting.
+
+## For lighting, we forming the tables:
+
+#st3:
+
+st3_noncrash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & (dat_1$LIGHTING==0),]),
+                nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & (dat_1$LIGHTING==1),]), 
+                nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & (dat_1$LIGHTING==0),]) + nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & (dat_1$LIGHTING==1),]))
+
+total = c(nrow(dat_1[ (dat_1$LIGHTING==0),]),
+          nrow(dat_1[ (dat_1$LIGHTING==1),]),
+          nrow(dat_1))
+
+st3_crash = total - st3_noncrash
+
+tbl_st3 <- data.frame(st3_noncrash,st3_crash,total)
+rownames(tbl_st3) <- c('Light',"No light","total")
+tbl_st3
+
+#st4:
+st4_noncrash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & (dat_2$LIGHTING==0),]),
+                 nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & (dat_2$LIGHTING==1),]), 
+                 nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & (dat_2$LIGHTING==0),]) + nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & (dat_2$LIGHTING==1),]))
+
+total = c(nrow(dat_2[ (dat_2$LIGHTING==0),]),
+          nrow(dat_2[ (dat_2$LIGHTING==1),]),
+          nrow(dat_2))
+
+st4_crash = total - st4_noncrash
+
+tbl_st4 <- data.frame(st4_noncrash,st4_crash,total)
+rownames(tbl_st4) <- c('Light',"No light","total")
+tbl_st4
+
+#sg4:
+sg4_noncrash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$LIGHTING==0),]),
+                 nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$LIGHTING==1),]), 
+                 nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$LIGHTING==0),]) + nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$LIGHTING==1),]))
+
+total = c(nrow(dat_3[ (dat_2$LIGHTING==0),]),
+          nrow(dat_3[ (dat_2$LIGHTING==1),]),
+          nrow(dat_3))
+
+sg4_crash = total - sg4_noncrash
+
+tbl_sg4 <- data.frame(sg4_noncrash,sg4_crash,total)
+rownames(tbl_sg4) <- c('Light',"No light","total")
+tbl_sg4
+
+#QMH
+nume = 0
+deno = 0
+df.list <- list(tbl_st3,tbl_st4,tbl_sg4)
+for (tbl in df.list ){
+  nume = nume + (tbl[1,1]-(tbl[1,3]*tbl[3,1])/tbl[3,3])
+  deno = deno + (tbl[1,3]*tbl[2,3]*tbl[3,1]*tbl[3,2])/(tbl[3,3]*tbl[3,3]*(tbl[3,3]-1))
+}
+QMH = (nume^2)/deno
+QMH >= qchisq(1-0.05, df=1)
+
+## It shows that we have no reason to refuse null hypothesis of MH test.
 
 
 
+#####################################################################################################
+### Now the MH test for turns.
+
+st3_noncrash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & (dat_1$APPROACH_LEFTTURN==0) & (dat_1$APPROACH_RIGHTTURN==0) ,]),
+                 nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & ((dat_1$APPROACH_LEFTTURN==1) | (dat_1$APPROACH_RIGHTTURN==1)),]), 
+                 nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & (dat_1$APPROACH_LEFTTURN==0) & (dat_1$APPROACH_RIGHTTURN==0),]) + nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & ((dat_1$APPROACH_LEFTTURN==1) | (dat_1$APPROACH_RIGHTTURN==1)),]))
+
+total = c(nrow(dat_1[(dat_1$APPROACH_LEFTTURN==0) & (dat_1$APPROACH_RIGHTTURN==0),]),
+          nrow(dat_1[((dat_1$APPROACH_LEFTTURN==1) | (dat_1$APPROACH_RIGHTTURN==1)),]),
+          nrow(dat_1))
+
+st3_crash = total - st3_noncrash
+
+tbl_st3 <- data.frame(st3_noncrash,st3_crash,total)
+rownames(tbl_st3) <- c('No turns',"Turns","total")
+tbl_st3
+
+#st4:
+st4_noncrash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & (dat_2$APPROACH_LEFTTURN==0) & (dat_2$APPROACH_RIGHTTURN==0),]),
+                 nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & ((dat_2$APPROACH_LEFTTURN==1) | (dat_2$APPROACH_RIGHTTURN==1)),]), 
+                 nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & (dat_2$APPROACH_LEFTTURN==0) & (dat_2$APPROACH_RIGHTTURN==0),]) + nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & ((dat_2$APPROACH_LEFTTURN==1) | (dat_2$APPROACH_RIGHTTURN==1)),]))
+
+total = c(nrow(dat_2[ (dat_2$APPROACH_LEFTTURN==0) & (dat_2$APPROACH_RIGHTTURN==0),]),
+          nrow(dat_2[ ((dat_2$APPROACH_LEFTTURN==1) | (dat_2$APPROACH_RIGHTTURN==1)),]),
+          nrow(dat_2))
+
+st4_crash = total - st4_noncrash
+
+tbl_st4 <- data.frame(st4_noncrash,st4_crash,total)
+rownames(tbl_st4) <- c('No turns',"Turns","total")
+tbl_st4
+
+#sg4
+sg4_noncrash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$APPROACH_LEFTTURN==0) & (dat_3$APPROACH_RIGHTTURN==0),]),
+                 nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & ((dat_3$APPROACH_LEFTTURN==1) | (dat_3$APPROACH_RIGHTTURN==1)),]), 
+                 nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$APPROACH_LEFTTURN==0) & (dat_3$APPROACH_RIGHTTURN==0),]) + nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & ((dat_3$APPROACH_LEFTTURN==1) | (dat_3$APPROACH_RIGHTTURN==1)),]))
+
+total = c(nrow(dat_3[ (dat_3$APPROACH_LEFTTURN==0) & (dat_3$APPROACH_RIGHTTURN==0),]),
+          nrow(dat_3[ ((dat_3$APPROACH_LEFTTURN==1) | (dat_3$APPROACH_RIGHTTURN==1)),]),
+          nrow(dat_3))
+
+sg4_crash = total - sg4_noncrash
+
+tbl_sg4 <- data.frame(sg4_noncrash,sg4_crash,total)
+rownames(tbl_sg4) <- c('No turns',"Turns","total")
+tbl_sg4
+
+#QMH
+nume = 0
+deno = 0
+df.list <- list(tbl_st3,tbl_st4,tbl_sg4)
+for (tbl in df.list ){
+  nume = nume + (tbl[1,1]-(tbl[1,3]*tbl[3,1])/tbl[3,3])
+  deno = deno + (tbl[1,3]*tbl[2,3]*tbl[3,1]*tbl[3,2])/(tbl[3,3]*tbl[3,3]*(tbl[3,3]-1))
+}
+QMH = (nume^2)/deno
+QMH >= qchisq(1-0.05, df=1)
+
+## It also shows that we have no reason to refuse null hypothesis of MH test.
