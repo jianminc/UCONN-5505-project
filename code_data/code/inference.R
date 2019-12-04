@@ -724,3 +724,9 @@ QMH = (nume^2)/deno
 QMH >= qchisq(1-0.05, df=1)
 
 ## It also shows that we have no reason to refuse null hypothesis of MH test.
+
+### Conduct chi-square test on individual table
+chisq.test(tbl_sg4[1:2,1:2],correct = FALSE)
+
+### Conduct Fisher-exact test on individual table
+fisher.test(tbl_st4[1:2,1:2], alternative = "two.sided", conf.int=FALSE)
