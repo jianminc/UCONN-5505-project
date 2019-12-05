@@ -309,11 +309,7 @@ Difference of Mean  & Lower Bound & Upper Bound & Contain 0 \\
 \end{tabular}
 \end{table}
 
-Firstly, we can see obviously that all PDO crashing number for three kinds of intersections are not normal data, so our test is based on Mann-Whitney test.
-
-\par
-
-For PDO crashing between 3st intersections and 4st intersections,
+Firstly, we can see obviously that all PDO crashing number for three kinds of intersections are not normal data, so our test is based on Mann-Whitney test, which procedure is listed below. For two data sequence ${X_A}$ and ${X_B}$, the null hypothesis and alternative will be
 
 \begin{equation*}
 \begin{array}{l}
@@ -324,13 +320,14 @@ For PDO crashing between 3st intersections and 4st intersections,
 \end{array}
 \end{equation*}
 
-where ${q_A}$ represents the median PDO crashing for 3st intersections, $q_B$ represents the median PDO crashing for 4st intersections. Then, the statistic can be constructed by:
 
-\begin{equation*}
+where $q$ is the median, and the statistic will be
+
+\begin{equation}
 \frac{{W - E\left( W \right)}}{{\sqrt {Var\left( W \right)} }}
-\end{equation*}
+\end{equation}
 
-and
+where
 
 \begin{equation}
 \label{mw-stat}
@@ -341,69 +338,19 @@ Var\left( W \right) = \frac{{mn}}{{12}}\left\{ {\left( {n + m + 1} \right) - \fr
 \end{array}
 \end{equation}
 
-where $n$ is PDO crashing sample size for 4st intersection; $m$ is PDO crashing sample size for 3st intersection; $R_j$ is the $j-$th sample rank for PDO crashing rank of 4st intersection samples; $g$ is the tie group numbers and $t_j$ is the tie group size for $j-$th tie group. According to the code in Appendix 2, our conclusion is ${{q_B} > {q_A}}$, i.e. the 4st intersection is more likely to happen PDO crash than 3st intersection.
 
 \par
 
-For PDO crashing between 4st intersections and 4sg intersections,
+For PDO crashing between 3st intersections and 4st intersections, and the ${q_A}$ represents the median PDO crashing for 3st intersections, $q_B$ represents the median PDO crashing for 4st intersections. Plus, in the statistic, $n$ is PDO crashing sample size for 4st intersection; $m$ is PDO crashing sample size for 3st intersection; $R_j$ is the $j-$th sample rank for PDO crashing rank of 4st intersection samples; $g$ is the tie group numbers and $t_j$ is the tie group size for $j-$th tie group. According to the code in Appendix 2, our conclusion is ${{q_B} > {q_A}}$, i.e. the 4st intersection is more likely to happen PDO crash than 3st intersection.
 
-\begin{equation*}
-\begin{array}{l}
-{H_0}:{q_A} = {q_B}\\
-{H_1}:{q_A} > {q_B}\begin{array}{*{20}{c}}
-{or}&{{q_B} > {q_A}}
-\end{array}
-\end{array}
-\end{equation*}
-
-where ${q_A}$ represents the median PDO crashing for 4st intersections, $q_B$ represents the median PDO crashing for 4sg intersections. Then, the statistic can be constructed by:
-
-\begin{equation*}
-\frac{{W - E\left( W \right)}}{{\sqrt {Var\left( W \right)} }}
-\end{equation*}
-
-and
-
-\begin{equation*}
-\begin{array}{l}
-W = \sum\limits_{j = 1}^n {{R_j}} \\
-E\left( W \right) = \frac{{n\left( {n + m + 1} \right)}}{2}\\
-Var\left( W \right) = \frac{{mn}}{{12}}\left\{ {\left( {n + m + 1} \right) - \frac{1}{{\left( {m + n} \right)\left( {m + n - 1} \right)}}\sum\limits_{j = 1}^g {{t_j}\left( {t_j^2 - 1} \right)} } \right\}
-\end{array}
-\end{equation*}
-
-where $n$ is PDO crashing sample size for 4sg intersection; $m$ is PDO crashing sample size for 4st intersection; $R_j$ is the $j-$th sample rank for PDO crashing rank of 4sg intersection samples; $g$ is the tie group numbers and $t_j$ is the tie group size for $j-$th tie group. According to the code in Appendix 2, our conclusion is ${{q_B} > {q_A}}$, i.e. the 4sg intersection is more likely to happen PDO crash than 4st intersection.
 
 \par
 
-For PDO crashing between 3st intersections and 4sg intersections,
+For PDO crashing between 4st intersections and 4sg intersections, and the ${q_A}$ represents the median PDO crashing for 4st intersections, $q_B$ represents the median PDO crashing for 4sg intersections. Plus, in the statistic, $n$ is PDO crashing sample size for 4sg intersection; $m$ is PDO crashing sample size for 4st intersection; $R_j$ is the $j-$th sample rank for PDO crashing rank of 4sg intersection samples; $g$ is the tie group numbers and $t_j$ is the tie group size for $j-$th tie group. According to the code in Appendix 2, our conclusion is ${{q_B} > {q_A}}$, i.e. the 4sg intersection is more likely to happen PDO crash than 4st intersection.
 
-\begin{equation*}
-\begin{array}{l}
-{H_0}:{q_A} = {q_B}\\
-{H_1}:{q_A} > {q_B}\begin{array}{*{20}{c}}
-{or}&{{q_B} > {q_A}}
-\end{array}
-\end{array}
-\end{equation*}
+\par
 
-where ${q_A}$ represents the median PDO crashing for 3st intersections, $q_B$ represents the median PDO crashing for 4sg intersections. Then, the statistic can be constructed by:
-
-\begin{equation*}
-\frac{{W - E\left( W \right)}}{{\sqrt {Var\left( W \right)} }}
-\end{equation*}
-
-and
-
-\begin{equation*}
-\begin{array}{l}
-W = \sum\limits_{j = 1}^n {{R_j}} \\
-E\left( W \right) = \frac{{n\left( {n + m + 1} \right)}}{2}\\
-Var\left( W \right) = \frac{{mn}}{{12}}\left\{ {\left( {n + m + 1} \right) - \frac{1}{{\left( {m + n} \right)\left( {m + n - 1} \right)}}\sum\limits_{j = 1}^g {{t_j}\left( {t_j^2 - 1} \right)} } \right\}
-\end{array}
-\end{equation*}
-
-where $n$ is PDO crashing sample size for 4sg intersection; $m$ is PDO crashing sample size for 3st intersection; $R_j$ is the $j-$th sample rank for PDO crashing rank of 4sg intersection samples; $g$ is the tie group numbers and $t_j$ is the tie group size for $j-$th tie group. According to the code in Appendix 2, our conclusion is ${{q_B} > {q_A}}$, i.e. the 4sg intersection is more likely to happen PDO crash than 3st intersection.
+For PDO crashing between 3st intersections and 4sg intersections, and the ${q_A}$ represents the median PDO crashing for 3st intersections, $q_B$ represents the median PDO crashing for 4sg intersections. Plus, in the statistic, $n$ is PDO crashing sample size for 4sg intersection; $m$ is PDO crashing sample size for 3st intersection; $R_j$ is the $j-$th sample rank for PDO crashing rank of 4sg intersection samples; $g$ is the tie group numbers and $t_j$ is the tie group size for $j-$th tie group. According to the code in Appendix 2, our conclusion is ${{q_B} > {q_A}}$, i.e. the 4sg intersection is more likely to happen PDO crash than 3st intersection.
 
 \par
 
