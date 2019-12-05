@@ -56,16 +56,18 @@
 
 \section{Abstract}
 
-In this paper, the group conducts the exploratory data analysis and statistical inferences on the CT crash data, judging that whether the variables such as type of intersections, presence of lighting, presence of a left-turn lane, presence of a right-turn lane and others could post great effects on the crash counts and exploring that how they work. The research might be useful for the government as a reference when designing the intersections in Connecticut.
+In this paper, the group conducts the exploratory data analysis and statistical inferences on the CT crash data, judging that whether the variables such as type of intersections, presence of lighting, presence of a left-turn lane, presence of a right-turn lane and others could post great effects on the damage accounts and exploring that how they work. The research is useful for the government as a reference when designing the intersection in Connecticut.
 
 
 \section{Introduction and Description of Data}
 
-In this paper, the group will take advantage of "CT Crash Data", which is the crash data for rural two-lane intersections and segments in Connecticut are collected in order to study highway safety. There 3 types of crash categories: PDO (property damage only), or B+C (possible injury or nonincapacitating injury), or K+A (fatal or incapacitating injury) crashes. And the intersection is also aggregated into 3 types with one dataset for each. Dataset 3ST Intersections CT.csv consists of n = 385 cases for 3ST (three-way stop controlled) intersections. Dataset 4ST Intersections CT.csv consists of n = 61 cases for 4ST (four-way stop controlled) intersections. Dataset 4SG Intersections CT.csv consists of n = 102 cases for 4SG (four-way signalized) intersections. Each dataset includes the following variables: Intersection ID, Annual Average Daily Traffic (AADT) for major roads and minor roads, three dummy variables to indicate presence of lighting, presence of a left-turn lane, and presence of a right-turn lane, followed by skew angle, and then the counts of PDO, KA, and BC crashes.  We combine the three data sets together for our analysis. 
+In this paper, the group will take advantage of "CT Crash Data", it is the crash data for rural two-lane intersections and segments in Connecticut are collected in order to study highway safety. Generally, crash severity counts may be aggregated into three categories: PDO (property damage only), or B+C (possible injury or nonincapacitating injury), or K+A (fatal or incapacitating injury) crashes. Three different data sets are available on the HuskyCT course website, corresponding to the type of intersections. Dataset 3ST Intersections CT.csv consists of n = 385 cases for 3ST (three-way stop controlled) intersections.
+Dataset 4ST Intersections CT.csv consists of n = 61 cases for 4ST (four-way stop controlled) intersections. Dataset 4SG Intersections CT.csv consists of n = 102 cases for 4SG (four-way signalized) intersections. Each dataset includes the following variables at each intersection: Intersection ID, Annual Average Daily Traffic (AADT) for major roads and minor roads, three dummy variables to indicate presence of lighting, presence of a left-turn lane, and presence of a right-turn lane, followed by skew angle, and then the counts of PDO, KA, and BC crashes.
 
 \subsection{Research proposing}
 
 In this paper, we are going to explore and confirm the following questions:
+
 \begin{itemize}
 	\item Do these different types of intersection affect the number of crashes? (Regardless of other features.)
 	\item If we control the types of intersection, whether other features (e.g. skewed angle, lighting, approaching turns, AADT major and minor) affect the number of crashes?
@@ -78,10 +80,13 @@ Qualitative: Lighting, Approach-Left, Approach-Right.
 
 Quantitative: AADT major, AADT minor, Skew Angle, PDO crashing number, KA crashing number, BC crashing number.
 
+
+
+
 \section{Exploratory Data Analysis}
 We first rearranged the 3 data set and combined them into 1 single data set. One column is added to specify the intersection type, denoted as INTERTYPE. It has 3 values, "3ST","4ST" and "4SG". Then we have 548 observations in total.
 
-A new dummy variable is constructed with "1" standing for there exists crash and "0" standing for no crash. This variable is denoted as "crash" and it is used as a candidate response variable when we want to analyze the data with mixed types of crash.
+A new categorical binary variable is constructed with "1" standing for there exists crash and "0" standing for no crash. This variable is denoted as "crash" and it is used as a candidate response variable when we want to analyze the data with mixed types of crash.
 
 In this part, we will do exploratory data analysis to first find some insight of the data.
 
@@ -89,7 +94,7 @@ In this part, we will do exploratory data analysis to first find some insight of
 
 First, let us see overall distribution of the 3 types of crashes and the distribution across intersection types.
 
-For the PDO(property damage only) crashes, overall, around 38\% of the intersections have 0 PDO crash. The overall distribution of PDO is spread out with some extreme values larger than 15. The distribution across different intersections shows some variations. The distribution is similar to the overall distribution in the 3ST type, while in 4SG and 4ST types, there are fewer zero counts and the data has larger variance with more non-zero counts had hence heavier tails. These infer that 4-way intersections tend to have more PDO crashes, especially the 4-way signalized intersection.
+For the PDO(property damage only) crashes, around 38\% of the intersections have 0 PDO crash overall. The overall distribution of PDO is spread out with some extreme values larger than 15. The distribution across different intersections shows some variations. The distribution is similar to the overall distribution in the 3ST type, while in 4SG and 4ST types, there are fewer zero counts and the data has larger variance with more non-zero counts had hence heavier tails. These infer that 4-way intersections tend to have more PDO crashes, especially the 4-way signalized intersection.
 
 \begin{figure}[H]
 \begin{minipage}[t]{0.5\linewidth}
@@ -137,7 +142,7 @@ For the KA(fatal or incapacitating injury) crashes, only 0,1 and 2 crashes are o
 \caption{Pie chart of KA}
 \end{figure}
 
-Comparing the overall distribution of 3 types of crashes, we can see that for all 3 types, 0 crash has the maximum proportion in all 548 intersection. PDO and BC have more possible count values with larger dispersions, which is a hint that it is not plausible to mix PDO, KA and BC observations together when we want to model the distribution of crashes. Also, variance exists between types of intersections. Since intersection type is a more fixed factor that is hard to change in real traffic, in the following parts, we will analyze the data controlling intersection type to get some plausible suggestions to reduce crashes based on other variables. 
+Comparing the overall distribution of 3 types of crashes, we can see that for all 3 types, 0 crash has the maximum proportion in all 548 intersection. PDO and BC have more possible count values with larger dispersions, which is a hint that it is not plausible to mix PDO, KA and BC observations together when we want to model the distribution of crashes. Also, variance exists between types of intersections. Since intersection type is a more fixed factor that is hard to change in real traffic, in the following parts, we will analyze the data controlling intersection type to get some plausible suggestions to reduce crashes based on other variables. Since our aim is to find the vital factor of crashes, and KA crash can be considered as rare event, we will also treat crash as binary distributed variables in some latter analysis, with 0 stands for no crash and 1 stands for at least 1 crash.
 
 \subsection{Crash vs Qualitative Variables}
 
@@ -145,13 +150,13 @@ Next, we find some interesting relationship between crash and the 3 categorical 
 
 \subsubsection{Lighting}
 
-First, let's see the relationship between LIGHTING and crashes. There are 197 intersections without lighting in all 548(around 36\%) intersections. Overall, when not controlling intersection type, intersection without lighting tends to have fewer crashes than intersection with lighting in all 3 types of crashes. We can compare the proportion of 0 counts in the following bar chart of PDO. The bar chart of BC and KA has similar tendency which are contained in Appendix1.
+First, let's see the relationship between LIGHTING and crashes. There are 197 intersections without lighting in all 548(around 36\%) intersections. Overall, when not controlling intersection type, intersection without lighting tends to have fewer crashes than intersection with lighting in all 3 types of crashes. We can compare the proportion of 0 counts in the following bar chart of PDO. The bar chart of BC and KA has similar tendency which are contained in appendix.
 
 When controlling intersection type, there are some interesting findings.
 
-For PDO, in 3ST and 4SG types, partitioned data has same tendency with whole data while for 4ST group, there is lower proportion of observations with crash when there is lighting, which is opposite to the whole data. For BC and KA, partitioning with intersection type generates same result in each group as the whole set.
+For PDO, in 3ST and 4SG types, partitioned data has same tendency with whole data while for 4ST group, there is lower proportion of observations with crash when there is lighting, which is opposite to the whole data. For BC and KA, partitioning with intersection type generate same result in each group as the whole set.
 
-The plots infer that there might be a relationship between lighting and crash, but the effect is not very obvious from the plots. We will not take 4ST PDO group out for special consideration as these group has a quite small number of observations which may cause larger randomness.
+The plots infer that there might be a relationship between lighting and crash. We will not take 4ST PDO group out for special consideration as these group has a small number of observations which may cause larger randomness.
 
 \begin{figure}[H]
 \begin{minipage}[t]{0.5\linewidth}
@@ -169,9 +174,9 @@ The plots infer that there might be a relationship between lighting and crash, b
 
 \subsubsection{Approach Left Turn and Approach Right Turn}
 
-There are only 65 intersections with approach left-turn. When partitioning with intersection type, we get the following contingency table. From the table we can see that the counts get even smaller when separated into 3 type, there is not much sense to analyze with data further separated by crash type. There is similar problem with approach right-turn. Hence, we will not control crash type here and only care whether there is crash or not. So later discussion will be based on the generated binary columns "crash".
+There are only 65 intersections with approach left-turn. When partitioned with intersection type, we get the following contingency table. From the table we can see that the counts get even smaller when separated into 3 type, there is not much sense to analyze with data further separated by crash type. We discuss the relationship between Approach Left-Turn and crash based on the generated columns "crash".
 
-We observed similar association between these 2 variables and crash. Overall, when not controlling intersection type, intersection with approach left-turn or right turn lane has a higher crash rate, which infers that approach turn lane may has a positive relationship with car crashes. However, when we look into data grouped by intersection type, it is  shown that approach turn lane does not have big effect with 3ST and 4SG intersections, even shown slightly negative relationship. The effect is only obvious in 4ST groups, where the number of observations with left or right turn lane are quite small. Hence, the result of overall data and 4ST data may not be reliable. 
+There is similar problem with approach right-turn. And we also analyze based on crash as response variable. We observed similar association between these 2 variables and crash. Overall, when not controlling intersection type, intersection with approach left-turn or right turn has a higher crash rate, which infers that approach turn may has a positive relationship with car crashes. However, when we look into data grouped by intersection type, is it shown that left-turn or right turn does not have big effect with 3ST and 4SG intersections, even shown slightly negative relationship. The effect is only obvious in 4ST groups, where the number of observations with left or right turn are quite small. Hence, the result of overall data and 4ST data may not be reliable. We need to check the relationship with data only from 3ST and 4SG group and take intersection type into consideration.
 
 Further, as same patterns are observed with right-turn and left-turn, we combine these 2 variables into a new binary variable, denoted as "TURN", where "1" stands for there exists an approaching turn and "0" else. The follow graph is made with combined column. (Separated result is in Appendix.)
 
@@ -212,7 +217,7 @@ Also, there is likely to exist some association between AADT-MAJOR, AADT-MINOR, 
 
 Selected graphs are shown in this part.
 
-We mainly apply the notched box-plot here to compare the distribution of AADT in intersection of crashes with intersection with no crash. The discussion is separated for each crash type. The first 3 box plots below show significant difference on median of overall distribution as the notches do not overlap. This infers that generally, the intersections with crash has higher level of AADT-Major in all 3 types of crashes.
+We mainly apply the notched box-plot here to compare the distribution of AADT in intersection of crashes with intersection of no crash. The first 3 box plots below show significant difference on median of overall distribution as the notch does not overlap. This infers that generally, the intersections with crash has higher level of AADT-Major in all 3 types of crashes.
 
 After controlling the intersection type, all partitioned data shows same pattern that higher AADT-Major appears in group with crash. However, for PDO and BC, the difference is only significant in 3ST group and for KA, no difference is significant.
 
@@ -230,7 +235,7 @@ After controlling the intersection type, all partitioned data shows same pattern
 \caption{Boxplot of AADT-Major}
 \end{figure}
 
-For AADT-Minor, AADT-Minor is significantly larger in intersection with crash when exploring overall data for all of PDO, KA and BC. When taking intersection type into consideration, for 3ST group, same patterns are observed as overall data that the difference are all significant. However, opposite pattern occurs in 4SG group that intersection with crash has a lower AADT-MINOR value. The opposite difference of sample median between the with-crash and without-crash group is significant in PDO crash. For 4ST group, all difference in median is not significant.
+For AADT-Minor, AADT-Minor is significantly larger in intersection with crash when exploring overall data for all of PDO, KA and BC. When taking intersection type into consideration, for 3ST group, same patters are observed as overall data and the difference are all significant. However, opposite pattern occurs in 4SG group that intersection with crash has a lower AADT-MINOR value. The difference of sample median between the with-crash and without-crash group is significant in PDO crash. For 4ST group, all difference in median is not significant.
 
 \begin{figure}[H]
 \begin{minipage}[t]{0.5\linewidth}
@@ -248,7 +253,7 @@ For AADT-Minor, AADT-Minor is significantly larger in intersection with crash wh
 
 \subsubsection{Skew Angle}
 
-For Skew Angle, we apply notched box plot also. In all 3 types of crash, groups with crash have smaller median for skew angle while the difference is only significant in KA crash type. When controlling intersection type, only the 3ST intersection and PDO crash group shows significant larger skew angle median in no crash group. All other are insignificant. 4SG group get insignificant opposite pattern in PDO and BC crash. 
+For Skew Angle, we apply notched box plot also. In all 3 types of crash, groups with crash have smaller median for skew angle while the difference is only significant in KA crash type. When controlling intersection type, only difference in 3ST intersection and PDO crash shows significant larger pattern in no crash group. All other are insignificant. 4SG group get insignificant opposite pattern in PDO and BC crash. Skew angle is a variable that is considered less important.
 
 \begin{figure}[H]
 \begin{minipage}[t]{0.5\linewidth}
@@ -268,27 +273,27 @@ For Skew Angle, we apply notched box plot also. In all 3 types of crash, groups 
 
 We get the following guess from the EDA part and the verification will be shown in the next inference part.
 
-1. PDO, BC and KA has different distribution features. 
+1. PDO, BC and KA has different distribution. They are not coming from different distribution family.
 
-2. Intersection type is a vital factor to crash counts. Four-way intersections have a higher probability for all 3 types of crash.
+2. Intersection type is a vital factor to crash. Four-way intersections are at a higher probability for all 3 types of crash.
 
 3. Intersection without lighting has a lower rate for all 3 types of crash. Controlling intersection type, same results are yielded except the PDO, 4ST group which has a lower crash rate when there is lighting. These results are kind of opposite to common sense.
 
-4. Approach (left or right) turn lane has negative effect on overall crash rate, which infers that when there is an approach turn lane, the crash rate goes down. The result is reasonable only for 3ST and 4ST group individually, as 4SG group has a small number of observations.
+4. Approach (left or right) turn has negative effect on overall crash rate, which infers that when there is an approach turn, the crash rate goes down. The result is only for 3ST and 4ST group individually. Data for 4SG group will not be analyzed with too few observations.
 
 5. AADT-Major and AADT-Minor is at a higher level in intersections with crash for whole data set. When controlling intersection, However, for AADT-Major, the tendency is only significant in 3ST group with PDO and BC. For AADT-Minor, opposite significant pattern occurs in 4SG group of PDO crash.
 
-6. Skew angle may not act as a vital factor to crash on overall data, but may has negative effect for crash in 3ST intersections.
+6. Skew angle may not act as a vital factor to crash.
 
 \section{Statistical Inference}
 
 \subsection{One v.s. PDO crashing independence test}
 
-We first test the relationship between crash and intersection type for 3 types of crash separately. We mainly use 3 types of methods here. When treating crash count as qualitative, normality assumption and same dispersion assumption are checked in each paired sample. Since none of the pairs satisfies normal assumption, we use Mann-Whitney test when paired sample has same dispersion. When we get different dispersion, we calculate Bootstrap confidence interval for difference of sample mean to check whether the interval contains 0 or not. If the interval contains 0, we infer that there is not obvious difference on the sample mean. (Since there is still randomness in Bootstrap, the Bootstrap CI cannot be related to test significance seriously.) Re-sampling time is set as 1000 in Bootstrap method. The same dispersion tests are carried out by Ansari-Bradley nonparametric test here. Whether the impact is positive or negative can be directly get from the tests above.
+We first test the relationship between crash and intersection type for 3 types of crash separately. We mainly use 3 types of methods here. When treating crash count as qualitative, normality assumption and same dispersion assumption are checked in each paired sample. Since none of the pairs satisfies normal assumption, we use Mann-Whitney test when paired sample has same dispersion. When we get different dispersion, we calculate Bootstrap confidence interval for difference of sample mean to check whether the interval contains 0 or not. If the interval contains 0, we infer that there is not obvious difference on the sample mean. Re-sampling time is set as 1000 in Bootstrap method. The same dispersion tests are carried out by Ansari-Bradley nonparametric test here. Whether the impact is positive or negative can be directly got from the tests above.
 
 When treating turning crash counts into binary variable as 1: crash, 0: nocrash, Pearson Chi-square test is applied to check independence.
 
-For Intersection Type vs PDO crash, only the 4ST vs 4SG group pass the same dispersion test. For 3ST vs 4ST and 3ST vs 4SG, 95\% Bootstrap Confidence Interval of difference of sample mean is calculate instead of testing. The result is shown in the table below. It infers that there is strong evidence that 4SG intersections have more PDO crash than 3ST. 4ST also has a higher level of crash than 3ST but not that strong.
+For Intersection Type vs PDO crash, only the 4st vs 4sg group pass the same dispersion test. For 3st vs 4st and 3st vs 4sg, 95\% Bootstrap Confidence Interval of difference of sample mean is calculate instead of testing. The result is shown in the table below.
 
 \begin{table}[H]
 \caption{Bootstrap Confidence Interval for PDO crash counts mean difference}
@@ -304,7 +309,7 @@ Difference of Mean  & Lower Bound & Upper Bound & Contain 0 \\
 \end{tabular}
 \end{table}
 
-Although some of the paired does not pass same dispersion test, we still conduct the Mann-Whitney tests on all pairs to see the results. the test may lose some power when the assumptions are violated. The test procedure is listed below. For two data sequence ${X_A}$ and ${X_B}$, the null hypothesis and alternative will be
+Firstly, we can see obviously that all PDO crashing number for three kinds of intersections are not normal data, so our test is based on Mann-Whitney test, which procedure is listed below. For two data sequence ${X_A}$ and ${X_B}$, the null hypothesis and alternative will be
 
 \begin{equation*}
 \begin{array}{l}
@@ -336,15 +341,16 @@ Var\left( W \right) = \frac{{mn}}{{12}}\left\{ {\left( {n + m + 1} \right) - \fr
 
 \par
 
-For PDO crashing between 3ST intersections and 4ST intersections, the ${q_A}$ represents the median PDO crashing for 3ST intersections, AND $q_B$ represents the median PDO crashing for 4ST intersections. Plus, in the statistic, $n$ is PDO crashing sample size for 4ST intersection; $m$ is PDO crashing sample size for 3ST intersection; $R_j$ is the $j-$th sample rank for PDO crashing rank of 4ST intersection samples; $g$ is the tie group numbers and $t_j$ is the tie group size for $j-$th tie group. According to the code in Appendix 2, our conclusion is ${{q_B} > {q_A}}$, i.e. the 4ST intersection is more likely to happen PDO crash than 3ST intersection.
+For PDO crashing between 3st intersections and 4st intersections, and the ${q_A}$ represents the median PDO crashing for 3st intersections, $q_B$ represents the median PDO crashing for 4st intersections. Plus, in the statistic, $n$ is PDO crashing sample size for 4st intersection; $m$ is PDO crashing sample size for 3st intersection; $R_j$ is the $j-$th sample rank for PDO crashing rank of 4st intersection samples; $g$ is the tie group numbers and $t_j$ is the tie group size for $j-$th tie group. According to the code in Appendix 2, our conclusion is ${{q_B} > {q_A}}$, i.e. the 4st intersection is more likely to happen PDO crash than 3st intersection.
+
 
 \par
 
-For PDO crashing between 4ST intersections and 4ST intersections, which the paired sample pass the same dispersion test, the ${q_A}$ represents the median PDO crashing for 4ST intersections, $q_B$ represents the median PDO crashing for 4SG intersections. Plus, in the statistic, $n$ is PDO crashing sample size for 4SG intersection; $m$ is PDO crashing sample size for 4ST intersection; $R_j$ is the $j-$th sample rank for PDO crashing rank of 4SG intersection samples; $g$ is the tie group numbers and $t_j$ is the tie group size for $j-$th tie group. According to the code in Appendix 2, our conclusion is ${{q_B} > {q_A}}$, i.e. the 4SG intersection is more likely to happen PDO crash than 4ST intersection.
+For PDO crashing between 4st intersections and 4sg intersections, and the ${q_A}$ represents the median PDO crashing for 4st intersections, $q_B$ represents the median PDO crashing for 4sg intersections. Plus, in the statistic, $n$ is PDO crashing sample size for 4sg intersection; $m$ is PDO crashing sample size for 4st intersection; $R_j$ is the $j-$th sample rank for PDO crashing rank of 4sg intersection samples; $g$ is the tie group numbers and $t_j$ is the tie group size for $j-$th tie group. According to the code in Appendix 2, our conclusion is ${{q_B} > {q_A}}$, i.e. the 4sg intersection is more likely to happen PDO crash than 4st intersection.
 
 \par
 
-For PDO crashing between 3ST intersections and 4SG intersections, and the ${q_A}$ represents the median PDO crashing for 3ST intersections, $q_B$ represents the median PDO crashing for 4SG intersections. Plus, in the statistic, $n$ is PDO crashing sample size for 4SG intersection; $m$ is PDO crashing sample size for 3ST intersection; $R_j$ is the $j-$th sample rank for PDO crashing rank of 4SG intersection samples; $g$ is the tie group numbers and $t_j$ is the tie group size for $j-$th tie group. According to the code in Appendix 2, our conclusion is ${{q_B} > {q_A}}$, i.e. the 4SG intersection is more likely to happen PDO crash than 3ST intersection.
+For PDO crashing between 3st intersections and 4sg intersections, and the ${q_A}$ represents the median PDO crashing for 3st intersections, $q_B$ represents the median PDO crashing for 4sg intersections. Plus, in the statistic, $n$ is PDO crashing sample size for 4sg intersection; $m$ is PDO crashing sample size for 3st intersection; $R_j$ is the $j-$th sample rank for PDO crashing rank of 4sg intersection samples; $g$ is the tie group numbers and $t_j$ is the tie group size for $j-$th tie group. According to the code in Appendix 2, our conclusion is ${{q_B} > {q_A}}$, i.e. the 4sg intersection is more likely to happen PDO crash than 3st intersection.
 
 \par
 
@@ -353,10 +359,10 @@ According to the conclusions above, we have:
 \begin{equation*}
 {q_A} < {q_B} < {q_C}
 \end{equation*}
-where $q_A$ represents the median number of PDO crashes of 3ST intersection, $q_B$ represents the median number of PDO crashes of 4ST intersection, $q_C$ represents the median number of PDO crashes of 4ST intersection.
+where $q_A$ represents the median number of PDO crashes of 3st intersection, $q_B$ represents the median number of PDO crashes of 4st intersection, $q_C$ represents the median number of PDO crashes of 4sg intersection.
 
 \par
-We can use another method - Pearson test in categorical analysis - to analyze this dependence. We fistly, transform the PDO crashing number into dummy variable. If the crashing number equals to 0, then we denote it as "noncrash", while if the crashing number is greater than 0, then we denote it as "crash". Thus, we can form the following table:
+However, we can use another method - Pearson test in categorical analysis - to analyze this dependence. We fistly, transform the PDO crashing number into dummy variable. If the crashing number equals to 0, then we denote it as "noncrash", while if the crashing number is greater than 0, then we denote it as "crash". Thus, we can form the following table:
 
 \begin{table}[H]
 \caption{Intersection VS Crash}
@@ -393,7 +399,48 @@ and it approximately obeys a ${\chi ^2}\left( 1 \right)$ distribution. Thus, acc
 
 \subsection{One v.s. BC and KA crashing independence test}
 
-We next conduct the independence test for BC crashes and KA crashes similar with the way we conduct for PDO test, so the testing procedures are omitted (codes are in Appendix 2). 
+We next conduct the independence test for BC crashes and KA crashes similar with the way we conduct for PDO test, so the testing procedures are omitted (codes are in Appendix 2). The conclusion is
+
+\begin{itemize}
+	\item ${q_A} < {q_B} < {q_C}$, where $q_A$ represents the median number of BC crashes of 3st intersection, $q_B$ represents the median number of BC crashes of 4st intersection, $q_C$ represents the median number of BC crashes of 4sg intersection.
+	\item ${q_A} < {q_B} = {q_C}$, where $q_A$ represents the median number of KA crashes of 3st intersection, $q_B$ represents the median number of KA crashes of 4st intersection, $q_C$ represents the median number of KA crashes of 4sg intersection.
+\end{itemize}
+
+and two categorical tables are:
+
+\begin{table}[H]
+\caption{Categorical table for BC crash}
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+      & 3ST & 4ST & 4SG & Total \\
+\hline
+Nocrash & 264 & 31  & 30 & 325 \\
+\hline
+Crash    & 121  & 30  & 72  & 223 \\
+\hline
+Total    & 385  & 61  & 102  & 548 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\caption{Categorical table for KA crash}
+\centering
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+      & 3ST & 4ST & 4SG & Total \\
+\hline
+Nocrash & 370 & 55  & 83 & 508 \\
+\hline
+Crash    & 15  & 6  & 19  & 50 \\
+\hline
+Total    & 385  & 61  & 102  & 548 \\
+\hline
+\end{tabular}
+\end{table}
+
+And finally both of these two Pearson tests show dependences.
 
 For 3 paired sample in KA crash, none of the pairs pass the Ansari-Bradley test. Hence, we construct Bootstrap Confidence Interval here.
 
@@ -431,60 +478,19 @@ Difference of Mean  & Lower Bound & Upper Bound & Contain 0 \\
 \end{tabular}
 \end{table}
 
-The Mann Whitney tests are still done and generate the result below. The order of median is the same as the shown in the Bootstrap confidence interval. However, the Bootstrap interval show some evidence that some of the inequality signs are not strictly holds.
-
-\begin{itemize}
-	\item ${q_A} < {q_B} < {q_C}$, where $q_A$ represents the median number of BC crashes of 3st intersection, $q_B$ represents the median number of BC crashes of 4st intersection, $q_C$ represents the median number of BC crashes of 4sg intersection.
-	\item ${q_A} < {q_B} = {q_C}$, where $q_A$ represents the median number of KA crashes of 3st intersection, $q_B$ represents the median number of KA crashes of 4st intersection, $q_C$ represents the median number of KA crashes of 4sg intersection.
-\end{itemize}
-
-The Pearson tests are also applied. And finally both of these two Pearson tests show dependence. Two categorical tables are:
-
-\begin{table}[H]
-\caption{Categorical table for BC crash}
-\centering
-\begin{tabular}{|c|c|c|c|c|}
-\hline
-      & 3ST & 4ST & 4SG & Total \\
-\hline
-Nocrash & 264 & 31  & 30 & 325 \\
-\hline
-Crash    & 121  & 30  & 72  & 223 \\
-\hline
-Total    & 385  & 61  & 102  & 548 \\
-\hline
-\end{tabular}
-\end{table}
-
-\begin{table}[H]
-\caption{Categorical table for KA crash}
-\centering
-\begin{tabular}{|c|c|c|c|c|}
-\hline
-      & 3ST & 4ST & 4SG & Total \\
-\hline
-Nocrash & 370 & 55  & 83 & 508 \\
-\hline
-Crash    & 15  & 6  & 19  & 50 \\
-\hline
-Total    & 385  & 61  & 102  & 548 \\
-\hline
-\end{tabular}
-\end{table}
-
 From the discussion between intersection type and crash counts, we can draw the follow conclusion:
 
 (1) There are dependent between intersection type and crash counts for all 3 types of crashes by Pearson tests.
 
 (2) By Mann-whitney test, for PDO, 4SG intersection is more likely to happen PDO crash than 4ST intersection.
 
-(3) As there is still randomness in Bootstrap method, some intervals constructed above have bounds close to 0, which may change sign in other realizations. Hence, here we take |x|>0.1 as an obvious difference from 0. From the tables above and combine with Mann-whitney test results, we can claim that for PDO, 4SG has obvious more crash than 3ST; for BC, 4SG has obvious more crash than 3ST and 4ST; for KA, there is likely to be no obvious pattern. However, all intervals constructed have the tendency to be at the left side of 0, which infers that there might be a tendency that the unit number of crash in all 3 types of crash follow the order 3ST<4ST<4SG.
+(3) As there is still randomness in Bootstrap method, some intervals constructed above have bounds close to 0, which may change sign in other realizations. Hence, here we take |x|>0.1 as an obvious difference from 0. From the tables above, we can claim that for PDO, 4SG has obvious more crash than 3ST; for BC, 4SG has obvious more crash than 3ST and 4ST; for KA, there is no obvious pattern. However, all intervals constructed have the tendency to be at the left side of 0, which infers that there might be a tendency that the unit number of crash in all 3 types of crash follow the order 3ST<4ST<4SG.
 
 \subsection{Two v.s. crashing independence test}
 
-\subsubsection{Crossing type + Skewed Angle v.s. Crashing}
+\subsubsection{Crossing type + skewed angle v.s. PDO crashing number}
 
-As we the skewed angle holds little choices of values, we decide to transform skewed angle into categorical data and also transform PDO crashing number as our previous method, forming the categorical table below. We settle a standard: let $s$ denote the skewed angle, if $0 \le s \le 30$, then we record it as ``1''; If $31 \le s \le 60$, then we record it as ``2''; If $61 \le s \le 90$, then we record it as ``3''. The effect is tested with interaction category across intersection types and skew angle. The 2-by-n tables are shown below.
+As we can see that the skewed angle holds little choices of values, so we decide to transform skewed angle into categorical data and also transform PDO crashing number as our previous method, forming the categorical table below. We settle a standard: let $s$ denote the skewed angle, if $0 \le s \le 30$, then we record it as ``1''; If $31 \le s \le 60$, then we record it as ``2''; If $61 \le s \le 90$, then we record it as ``3''.
 
 \begin{table}[H]
 \caption{Discrete skew v.s. PDO crash}
@@ -534,7 +540,8 @@ Total    & 299  & 70  & 16  & 50 & 10 & 1 & 89 & 13 & 548 \\
 \end{tabular}
 \end{table}
 
-Then, the Pearson test shows that there exists a dependence for all three kinds of crashes (codes are in Appendix 2.) and we have also conducted the association test for separate single one vs one group as following, the p-value table shows:
+Then, the Pearson test shows that there exists a dependence for all three kinds of crashes (codes are in Appendix 2.) and we have also conducted the association test for separate single one v.s one group as following, the p-value table shows:
+
 
 \begin{table}[H]
 \caption{P-value for skew angle vs Crash}
@@ -554,10 +561,9 @@ Mixed & 0.0496 & 0.2618 & 0.2026 \\
 \end{tabular}
 \end{table}
 
-The one vs one test show no significance except 3ST with mixed data, which is opposite to the overall test. 
 
 
-\subsubsection{Crossing type + Lighting vs Crashing}
+\subsubsection{Crossing type + Lighting vs Crash}
 
 As the lighting itself is a dummy variable, we can form the following categorical table:
 
@@ -579,9 +585,25 @@ Total    & 150  & 235  & 23  & 38 & 24 & 78 & 548 \\
 
 Then, the Pearson test shows that there exists a dependence (codes are in Appendix 2.)
 
-One vs one tests are also done here. 
+Here we get the 3 2-by-2 contingency table between Lighting and crash with PDO crash, controlling intersection type. Here, '0' stands for no Lighting, '1' stands for Lighting.
 
-We also use the three 2-by-2 contingency tables between Lighting and crash with PDO crash for each intersection type, which can directly get from table above.  Same table are generated for KA and BC. For all 2-by-2 table, only table of KA, 4ST has cell counts less than 5. For this one, we apply Fisher-exact test. For others, we conduct individual Pearson test on each table. None of the above tests reject the Null hypothesis. P-value are shown in table below. When testing the overall effect across table, in the Mantel-Haenszel test cannot reject the Null in all 3 types of crashes. Hence, no dependence of Lighting and crash are observed here.
+\begin{table}[H]
+\caption{Crossing type + Lighting separately v.s. PDO crash}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+      & 3ST\_0 & 3ST\_1 & Total & 4ST\_0 & 4ST\_1 & Total & 4SG\_0 & 4SG\_1 & Total \\
+\hline
+Nocrash & 74 & 99 & 173 & 5 & 13 & 18 & 6 & 12 & 18\\
+\hline
+Crash    & 76  & 136 & 212 & 18 & 25 & 43 & 28 & 66 & 94\\
+\hline
+Total    & 150  & 235 & 385 & 23  & 38 & 61 & 24 & 78 & 102\\
+\hline
+\end{tabular}
+\end{table}
+
+Same contingency tables are constructed be BC crash, KA crash and mixed crash type. Only table of KA, 4ST has cell counts less than 5. For this one, we apply Fisher-exact test. For others, we conduct individual Pearson test on each table. None of the above tests reject the Null hypothesis. P-value are shown in table below. When testing the overall effect across table, in the Mantel-Haenszel test cannot reject the Null in all 3 types of crashes. Hence, no dependence of Lighting and crash are observed here.
 
 When we mix 3 types of crash together and still construct 2-by-2 table across intersections, same results are generated.
 
@@ -605,14 +627,13 @@ Mixed & 0.0879 & 0.9494 & 0.5732 \\
 \end{tabular}
 \end{table}
 
-Again,the one vs one test show opposite result to the overall test. 
 
-\subsubsection{Crossing type + turns for Turn vs Crashing}
+\subsubsection{Crossing type + turns for Turn vs Crash}
 
-Based on the results from the EDA part, we combine Approach Left Turn and Approach Right Turn as one dummy variable where 1 stands for there is an approach turn and 0 stands for not. Even then, approach turn existence is still a rare event in all intersection types.  Also, if we continuing partitioning the data by crash type to form contingency table, we will have cells with extremely small counts equal to 0. Hence, we only analyses with mixed data with all crashes types mixed. We can form the following contingency table:
+As the lighting itself is a dummy variable, we can also form the following categorical table:
 
 \begin{table}[H]
-\caption{Overall Crossing type + turns v.s. crash}
+\caption{Crossing type + turns v.s. PDO crash}
 \centering
 \tiny
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
@@ -630,17 +651,36 @@ Total   & 364  & 4 & 10 & 7 & 57 & 3 & 1 & 55 & 3 & 22 & 22 & 548\\
 
 where ``00'' represents no left approach or right approach; ``01'' represents no left approach but a right approach; ``10'' represents no right approach but left approach; ``11'' represents a left approach and right approach. Then, the Pearson test shows that there exists a dependence (codes are in Appendix 2.)
 
-One vs one tests are also applied with 2-by-2 tables from above larger table for each intersection type separately. We do both Mantel-Haenszel test and 3 individual tests to test for independence between column and row.
+Based on the results from the EDA part, we combine Approach Left Turn and Approach Right Turn as one dummy variable where 1 stands for there is an approach turn and 0 stands for not. Even then, approach turn existence is still a rare event in all intersection types. Also, if we continuing partitioning the data by crash type to form contingency table, we will have cells with extremely small counts equal to 0. Hence, we only analyses with mixed data with all crashes types mixed. We can form the following categorical table:
+
+\begin{table}[H]
+\caption{Crossing type + turns separately v.s. PDO crash}
+\centering
+\tiny
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+counts  & 3ST\_0 & 3ST\_1 & Total & 4ST\_0 & 4ST\_1 & Total & 4SG\_0 & 4SG\_1 & Total \\
+\hline
+Nocrash & 145  & 9 & 154  & 13 & 0 & 13 & 9 & 9 & 18 \\
+\hline
+Crash   & 219  & 12 & 231 & 44 & 4 & 48 & 46 & 38 & 84 \\
+\hline
+Total   & 364  & 21 & 385 & 57 & 4 & 61 & 55 & 47 & 102 \\
+\hline
+Test    & Pearson & p-value & 0.7834 & Fisher & p-value & 0.5691 & Pearson & p-value & 0.713 \\
+\hline
+\end{tabular}
+\end{table}
+
+We do both Mantel-Haenszel test and 3 individual tests to test for independence between column and row.
 
 For the 3 individual test, for 3ST and 4SG, we have all cell counts larger than 5. We apply Pearson Chi-square tests and get p-value as 0.7834 and 0.713, which infers there is no dependency. For 4ST, we use the Fisher-exact test as counts are rather small and get p-value of 0.3729. The individual tests show no relationship between Crash and Turns.
 
 For the Mantel-Haenszel test, although we get the result that there is no overall effect of Turn on crash when controlling intersection type, the assumptions are not all satisfied due to small cell counts. But, it can still be some kind of evidence that there is no relationship.
 
-Again, we get difference result between overall test and one vs one test. 
+\subsubsection{Crossing type + AADT major for crash}
 
-\subsubsection{Crossing type + AADT major VS Crashing}
-
-We firstly partition the full samples into 6 parts: 3ST intersection + crash; 3ST intersection + noncrash; 4ST intersection + crash; 4ST intersection + noncrash; 4SG intersection + crash; 4SG intersection + noncrash. And we carry out a Shapiro normality test on these 6 sample pieces, however, few of them pass the test. Hence, once again, we need to turn to the Mann-Whitney test.
+We firstly partition the full samples into 6 parts: 3st intersection + crash; 3st intersection + noncrash; 4st intersection + crash; 4st intersection + noncrash; 4sg intersection + crash; 4sg intersection + noncrash. And we carry out a Shapiro normality test on these 6 sample pieces, however, few of them pass the test. Hence, once again, we need to turn to the Mann-Whitney test.
 
 \par
 
@@ -655,7 +695,7 @@ Comparing the AADT major and controlling the intersection type in 3st, we have t
 \end{array}
 \end{equation*}
 
-where $q_A$ represents the median of AADT major in PDO noncrash situation in 3ST intersection, while $q_B$ represents the median of AADT major with PDO crash situation in 3ST intersection. And the statistic is similar with \eqref{mw-stat}. And our final conclusion (codes are in Appendix 2) is:
+where $q_A$ represents the median of AADT major in PDO noncrash situation in 3st intersection, while $q_B$ represents the median of AADT major with PDO crash situation in 3st intersection. And the statistic is similar with \eqref{mw-stat}. And our final conclusion (codes are in Appendix 2) is:
 
 \begin{equation*}
 {q_A} < {q_B}.
@@ -663,7 +703,7 @@ where $q_A$ represents the median of AADT major in PDO noncrash situation in 3ST
 
 \par
 
-Comparing the AADT major and controlling the intersection type in 4ST, we have the following hypotheses:
+Comparing the AADT major and controlling the intersection type in 4st, we have the following hypotheses:
 
 \begin{equation*}
 \begin{array}{l}
@@ -674,7 +714,7 @@ Comparing the AADT major and controlling the intersection type in 4ST, we have t
 \end{array}
 \end{equation*}
 
-where $q_A$ represents the median of AADT major in PDO noncrash situation in 4ST intersection, while $q_B$ represents the median of AADT major with PDO crash situation in 4ST intersection. And the statistic is similar with \eqref{mw-stat}. And our final conclusion (codes are in Appendix 2) is:
+where $q_A$ represents the median of AADT major in PDO noncrash situation in 4st intersection, while $q_B$ represents the median of AADT major with PDO crash situation in 4st intersection. And the statistic is similar with \eqref{mw-stat}. And our final conclusion (codes are in Appendix 2) is:
 
 \begin{equation*}
 {q_A} = {q_B}.
@@ -682,7 +722,7 @@ where $q_A$ represents the median of AADT major in PDO noncrash situation in 4ST
 
 \par
 
-Comparing the AADT major and controlling the intersection type in 4SG, we have the following hypotheses:
+Comparing the AADT major and controlling the intersection type in 4sg, we have the following hypotheses:
 
 \begin{equation*}
 \begin{array}{l}
@@ -693,7 +733,7 @@ Comparing the AADT major and controlling the intersection type in 4SG, we have t
 \end{array}
 \end{equation*}
 
-where $q_A$ represents the median of AADT major in PDO noncrash situation in 4SG intersection , while $q_B$ represents the median of AADT major with PDO crash situation in 4SG intersection. And the statistic is similar with \eqref{mw-stat}. And our final conclusion (codes are in Appendix 2) is:
+where $q_A$ represents the median of AADT major in PDO noncrash situation in 4sg intersection , while $q_B$ represents the median of AADT major with PDO crash situation in 4sg intersection. And the statistic is similar with \eqref{mw-stat}. And our final conclusion (codes are in Appendix 2) is:
 
 \begin{equation*}
 {q_A} = {q_B}.
@@ -701,13 +741,13 @@ where $q_A$ represents the median of AADT major in PDO noncrash situation in 4SG
 
 By same Mann-Whitney tests, for KA crash, AADT-Major only has significant effect at 3ST intersection. Larger AADT-Major intersection has higher crash rate. For BC crash, significant impact is observed both in 3ST and 4ST. In both case, larger AADT-Major is related to higher crash rate.
 
-\subsubsection{Crossing type + AADT minor vs Crashing}
+\subsubsection{Crossing type + AADT minor for crash}
 
 With the same partition made for AADT major,we also carry out a Shapiro normality test on these 6 sample pieces for AADT minor, however, few of them pass the test. Hence, once again, we need to turn to the Mann-Whitney test.
 
 \par
 
-Comparing the AADT minor and controlling the intersection type in 3ST, we have the following hypotheses:
+Comparing the AADT minor and controlling the intersection type in 3st, we have the following hypotheses:
 
 \begin{equation*}
 \begin{array}{l}
@@ -718,7 +758,7 @@ Comparing the AADT minor and controlling the intersection type in 3ST, we have t
 \end{array}
 \end{equation*}
 
-where $q_A$ represents the median of AADT minor in PDO noncrash situation in 3st intersection, while $q_B$ represents the median of AADT minor with PDO crash situation in 3ST intersection. And the statistic is similar with \eqref{mw-stat}. And our final conclusion (codes are in Appendix 2) is:
+where $q_A$ represents the median of AADT minor in PDO noncrash situation in 3st intersection, while $q_B$ represents the median of AADT minor with PDO crash situation in 3st intersection. And the statistic is similar with \eqref{mw-stat}. And our final conclusion (codes are in Appendix 2) is:
 
 \begin{equation*}
 {q_A} < {q_B}.
@@ -726,7 +766,7 @@ where $q_A$ represents the median of AADT minor in PDO noncrash situation in 3st
 
 \par
 
-Comparing the AADT minor and controlling the intersection type in 4ST, we have the following hypotheses:
+Comparing the AADT minor and controlling the intersection type in 4st, we have the following hypotheses:
 
 \begin{equation*}
 \begin{array}{l}
@@ -737,7 +777,7 @@ Comparing the AADT minor and controlling the intersection type in 4ST, we have t
 \end{array}
 \end{equation*}
 
-where $q_A$ represents the median of AADT minor in PDO noncrash situation in 4ST intersection, while $q_B$ represents the median of AADT minor with PDO crash situation in 4ST intersection. And the statistic is similar with \eqref{mw-stat}. And our final conclusion (codes are in Appendix 2) is:
+where $q_A$ represents the median of AADT minor in PDO noncrash situation in 4st intersection, while $q_B$ represents the median of AADT minor with PDO crash situation in 4st intersection. And the statistic is similar with \eqref{mw-stat}. And our final conclusion (codes are in Appendix 2) is:
 
 \begin{equation*}
 {q_A} = {q_B}.
@@ -745,7 +785,7 @@ where $q_A$ represents the median of AADT minor in PDO noncrash situation in 4ST
 
 \par
 
-Comparing the AADT minor and controlling the intersection type in 4SG, we have the following hypotheses:
+Comparing the AADT minor and controlling the intersection type in 4sg, we have the following hypotheses:
 
 \begin{equation*}
 \begin{array}{l}
@@ -756,7 +796,7 @@ Comparing the AADT minor and controlling the intersection type in 4SG, we have t
 \end{array}
 \end{equation*}
 
-where $q_A$ represents the median of AADT minor in PDO noncrash situation in 4SG intersection , while $q_B$ represents the median of AADT minor with PDO crash situation in 4SG intersection. And the statistic is similar with \eqref{mw-stat}. And our final conclusion (codes are in Appendix 2) is:
+where $q_A$ represents the median of AADT minor in PDO noncrash situation in 4sg intersection , while $q_B$ represents the median of AADT minor with PDO crash situation in 4sg intersection. And the statistic is similar with \eqref{mw-stat}. And our final conclusion (codes are in Appendix 2) is:
 
 \begin{equation*}
 {q_A} = {q_B}.
@@ -774,13 +814,11 @@ For Intersection Type vs crash counts only: Intersection type affects the probab
 
 Controlling intersection type:
 
-(1) Skew angle & Lighting: The effect of skew angle is not significant when controlling intersection type, while the interaction effect between intersection and skew angle is tested to be significant. 
+(1) Lighting: Discussions only focus on data with 3 types of crashes mixed together due to lack of observations. There is no significant effect of Lighting on crash rate observed.
 
-(2) Turns: Discussions only focus on data with 3 types of crashes mixed together due to lack of observations. Again, we have insignificant effect of turns with significant interaction effect between turns and intersection types.
+(2) Turns: Discussions only focus on data with 3 types of crashes mixed together due to lack of observations. There is no significant effect of Approach Turns on crash rate observed.
 
 (3) AADT-Major and AADT-Minor: Only positive impact of AADT-Major and AADT-Minor is observed on crash rate. For PDO, 3ST intersection with higher AADT-Major level or higher AADT-Minor level tends to has higher crash rate. For KA, same impact observed in 3ST. For BC, such positive effect occurs in 3ST and 4ST. The result infers that controlling AADT at a lower level might be a good method to reduce crash rate at 3ST and 4ST intersection, but might not help for 4SG intersections.
-
-The results in (1) and (2) need further discussion as the existence of contradict between main effect and interaction effect. Overall, there is no common suggestion based on skew angle, lighting and turns towards crash.
 
 
 \subsection{Further Discussion}
