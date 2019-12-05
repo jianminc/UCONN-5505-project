@@ -358,10 +358,410 @@ for (i in 1:2){
     Q = Q + (tbl[i,j]-(tbl[i,9]*tbl[3,j]/tbl[3,9]))^2/(tbl[i,9]*tbl[3,j]/tbl[3,9])
   }
 }
-Q >= qchisq(0.95,df=(2*1))
+Q >= qchisq(0.95,df=(7*1))
+1-pchisq(Q,df=(7*1))
 
 ### It returns true, so there exist correlation.
 
+################################################################################
+#For BC
+dat_1$SKEW_ANGLE = cut(dat_1$SKEW_ANGLE, breaks=c(-1,31,61,91), labels=c(1,2,3))
+dat_2$SKEW_ANGLE = cut(dat_2$SKEW_ANGLE, breaks=c(-1,31,61,91), labels=c(1,2,3))
+dat_3$SKEW_ANGLE = cut(dat_3$SKEW_ANGLE, breaks=c(-1,31,61,91), labels=c(1,2,3))
+
+## Forming the table (BC):
+
+st3_1_crash = c(nrow(dat_1[(dat_1$BC==0) & (dat_1$SKEW_ANGLE==1),]),
+                nrow(dat_1[(dat_1$BC>0) & (dat_1$SKEW_ANGLE==1),]), 
+                nrow(dat_1[(dat_1$BC==0) & (dat_1$SKEW_ANGLE==1),]) + nrow(dat_1[(dat_1$BC>0) & (dat_1$SKEW_ANGLE==1),]))
+st3_2_crash = c(nrow(dat_1[(dat_1$BC==0) & (dat_1$SKEW_ANGLE==2),]),
+                nrow(dat_1[(dat_1$BC>0) & (dat_1$SKEW_ANGLE==2),]), 
+                nrow(dat_1[(dat_1$BC==0) & (dat_1$SKEW_ANGLE==2),]) + nrow(dat_1[(dat_1$BC>0) & (dat_1$SKEW_ANGLE==2),]))
+st3_3_crash = c(nrow(dat_1[(dat_1$BC==0) & (dat_1$SKEW_ANGLE==3),]),
+                nrow(dat_1[(dat_1$BC>0) & (dat_1$SKEW_ANGLE==3),]), 
+                nrow(dat_1[(dat_1$BC==0) & (dat_1$SKEW_ANGLE==3),]) + nrow(dat_1[(dat_1$BC>0) & (dat_1$SKEW_ANGLE==3),]))
+st4_1_crash = c(nrow(dat_2[(dat_2$BC==0) & (dat_2$SKEW_ANGLE==1),]),
+                nrow(dat_2[(dat_2$BC>0) & (dat_2$SKEW_ANGLE==1),]), 
+                nrow(dat_2[(dat_2$BC==0) & (dat_2$SKEW_ANGLE==1),]) + nrow(dat_2[(dat_2$BC>0) & (dat_2$SKEW_ANGLE==1),]))
+st4_2_crash = c(nrow(dat_2[(dat_2$BC==0) & (dat_2$SKEW_ANGLE==2),]),
+                nrow(dat_2[(dat_2$BC>0) & (dat_2$SKEW_ANGLE==2),]), 
+                nrow(dat_2[(dat_2$BC==0) & (dat_2$SKEW_ANGLE==2),]) + nrow(dat_2[(dat_2$BC>0) & (dat_2$SKEW_ANGLE==2),]))
+st4_3_crash = c(nrow(dat_2[(dat_2$BC==0) & (dat_2$SKEW_ANGLE==3),]),
+                nrow(dat_2[(dat_2$BC>0) & (dat_2$SKEW_ANGLE==3),]), 
+                nrow(dat_2[(dat_2$BC==0) & (dat_2$SKEW_ANGLE==3),]) + nrow(dat_2[(dat_2$BC>0) & (dat_2$SKEW_ANGLE==3),]))
+sg4_1_crash = c(nrow(dat_3[(dat_3$BC==0) & (dat_3$SKEW_ANGLE==1),]),
+                nrow(dat_3[(dat_3$BC>0) & (dat_3$SKEW_ANGLE==1),]), 
+                nrow(dat_3[(dat_3$BC==0) & (dat_3$SKEW_ANGLE==1),]) + nrow(dat_3[(dat_3$BC>0) & (dat_3$SKEW_ANGLE==1),]))
+sg4_2_crash = c(nrow(dat_3[(dat_3$BC==0) & (dat_3$SKEW_ANGLE==2),]),
+                nrow(dat_3[(dat_3$BC>0) & (dat_3$SKEW_ANGLE==2),]), 
+                nrow(dat_3[(dat_3$BC==0) & (dat_3$SKEW_ANGLE==2),]) + nrow(dat_3[(dat_3$BC>0) & (dat_3$SKEW_ANGLE==2),]))
+sg4_3_crash = c(nrow(dat_3[(dat_3$BC==0) & (dat_3$SKEW_ANGLE==3),]),
+                nrow(dat_3[(dat_3$BC>0) & (dat_3$SKEW_ANGLE==3),]), 
+                nrow(dat_3[(dat_3$BC==0) & (dat_3$SKEW_ANGLE==3),]) + nrow(dat_3[(dat_3$BC>0) & (dat_3$SKEW_ANGLE==3),]))
+total = st3_1_crash + st3_2_crash + st3_3_crash + st4_1_crash + st4_2_crash + st4_3_crash + sg4_1_crash + sg4_2_crash + sg4_3_crash 
+tbl <- data.frame(st3_1_crash, st3_2_crash, st3_3_crash, st4_1_crash, st4_2_crash, st4_3_crash, sg4_1_crash,
+                  sg4_2_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+### Conduct chi-square test:
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:8){
+    Q = Q + (tbl[i,j]-(tbl[i,9]*tbl[3,j]/tbl[3,9]))^2/(tbl[i,9]*tbl[3,j]/tbl[3,9])
+  }
+}
+Q >= qchisq(0.95,df=(7*1))
+1-pchisq(Q,df=(7*1))
+
+### It returns true, so there exist correlation.
+
+
+## Forming the table (KA):
+
+st3_1_crash = c(nrow(dat_1[(dat_1$KA==0) & (dat_1$SKEW_ANGLE==1),]),
+                nrow(dat_1[(dat_1$KA>0) & (dat_1$SKEW_ANGLE==1),]), 
+                nrow(dat_1[(dat_1$KA==0) & (dat_1$SKEW_ANGLE==1),]) + nrow(dat_1[(dat_1$KA>0) & (dat_1$SKEW_ANGLE==1),]))
+st3_2_crash = c(nrow(dat_1[(dat_1$KA==0) & (dat_1$SKEW_ANGLE==2),]),
+                nrow(dat_1[(dat_1$KA>0) & (dat_1$SKEW_ANGLE==2),]), 
+                nrow(dat_1[(dat_1$KA==0) & (dat_1$SKEW_ANGLE==2),]) + nrow(dat_1[(dat_1$KA>0) & (dat_1$SKEW_ANGLE==2),]))
+st3_3_crash = c(nrow(dat_1[(dat_1$KA==0) & (dat_1$SKEW_ANGLE==3),]),
+                nrow(dat_1[(dat_1$KA>0) & (dat_1$SKEW_ANGLE==3),]), 
+                nrow(dat_1[(dat_1$KA==0) & (dat_1$SKEW_ANGLE==3),]) + nrow(dat_1[(dat_1$KA>0) & (dat_1$SKEW_ANGLE==3),]))
+st4_1_crash = c(nrow(dat_2[(dat_2$KA==0) & (dat_2$SKEW_ANGLE==1),]),
+                nrow(dat_2[(dat_2$KA>0) & (dat_2$SKEW_ANGLE==1),]), 
+                nrow(dat_2[(dat_2$KA==0) & (dat_2$SKEW_ANGLE==1),]) + nrow(dat_2[(dat_2$KA>0) & (dat_2$SKEW_ANGLE==1),]))
+st4_2_crash = c(nrow(dat_2[(dat_2$KA==0) & (dat_2$SKEW_ANGLE==2),]),
+                nrow(dat_2[(dat_2$KA>0) & (dat_2$SKEW_ANGLE==2),]), 
+                nrow(dat_2[(dat_2$KA==0) & (dat_2$SKEW_ANGLE==2),]) + nrow(dat_2[(dat_2$KA>0) & (dat_2$SKEW_ANGLE==2),]))
+st4_3_crash = c(nrow(dat_2[(dat_2$KA==0) & (dat_2$SKEW_ANGLE==3),]),
+                nrow(dat_2[(dat_2$KA>0) & (dat_2$SKEW_ANGLE==3),]), 
+                nrow(dat_2[(dat_2$KA==0) & (dat_2$SKEW_ANGLE==3),]) + nrow(dat_2[(dat_2$KA>0) & (dat_2$SKEW_ANGLE==3),]))
+sg4_1_crash = c(nrow(dat_3[(dat_3$KA==0) & (dat_3$SKEW_ANGLE==1),]),
+                nrow(dat_3[(dat_3$KA>0) & (dat_3$SKEW_ANGLE==1),]), 
+                nrow(dat_3[(dat_3$KA==0) & (dat_3$SKEW_ANGLE==1),]) + nrow(dat_3[(dat_3$KA>0) & (dat_3$SKEW_ANGLE==1),]))
+sg4_2_crash = c(nrow(dat_3[(dat_3$KA==0) & (dat_3$SKEW_ANGLE==2),]),
+                nrow(dat_3[(dat_3$KA>0) & (dat_3$SKEW_ANGLE==2),]), 
+                nrow(dat_3[(dat_3$KA==0) & (dat_3$SKEW_ANGLE==2),]) + nrow(dat_3[(dat_3$KA>0) & (dat_3$SKEW_ANGLE==2),]))
+sg4_3_crash = c(nrow(dat_3[(dat_3$KA==0) & (dat_3$SKEW_ANGLE==3),]),
+                nrow(dat_3[(dat_3$KA>0) & (dat_3$SKEW_ANGLE==3),]), 
+                nrow(dat_3[(dat_3$KA==0) & (dat_3$SKEW_ANGLE==3),]) + nrow(dat_3[(dat_3$KA>0) & (dat_3$SKEW_ANGLE==3),]))
+total = st3_1_crash + st3_2_crash + st3_3_crash + st4_1_crash + st4_2_crash + st4_3_crash + sg4_1_crash + sg4_2_crash + sg4_3_crash 
+tbl <- data.frame(st3_1_crash, st3_2_crash, st3_3_crash, st4_1_crash, st4_2_crash, st4_3_crash, sg4_1_crash,
+                  sg4_2_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+
+### Conduct chi-square test:
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:8){
+    Q = Q + (tbl[i,j]-(tbl[i,9]*tbl[3,j]/tbl[3,9]))^2/(tbl[i,9]*tbl[3,j]/tbl[3,9])
+  }
+}
+Q >= qchisq(0.95,df=(7*1))
+1-pchisq(Q,df=(7*1))
+
+### It returns true, so there exist correlation.
+
+##################################################################################
+## Seperate check for skew + intersection v.s. crash
+
+#(pdo + 3st)
+st3_1_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$SKEW_ANGLE==1),]),
+                nrow(dat_1[(dat_1$PDO>0) & (dat_1$SKEW_ANGLE==1),]), 
+                nrow(dat_1[(dat_1$PDO==0) & (dat_1$SKEW_ANGLE==1),]) + nrow(dat_1[(dat_1$PDO>0) & (dat_1$SKEW_ANGLE==1),]))
+st3_2_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$SKEW_ANGLE==2),]),
+                nrow(dat_1[(dat_1$PDO>0) & (dat_1$SKEW_ANGLE==2),]), 
+                nrow(dat_1[(dat_1$PDO==0) & (dat_1$SKEW_ANGLE==2),]) + nrow(dat_1[(dat_1$PDO>0) & (dat_1$SKEW_ANGLE==2),]))
+st3_3_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$SKEW_ANGLE==3),]),
+                nrow(dat_1[(dat_1$PDO>0) & (dat_1$SKEW_ANGLE==3),]), 
+                nrow(dat_1[(dat_1$PDO==0) & (dat_1$SKEW_ANGLE==3),]) + nrow(dat_1[(dat_1$PDO>0) & (dat_1$SKEW_ANGLE==3),]))
+total = st3_1_crash + st3_2_crash + st3_3_crash
+tbl <- data.frame(st3_1_crash, st3_2_crash, st3_3_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:3){
+    Q = Q + (tbl[i,j]-(tbl[i,4]*tbl[3,j]/tbl[3,4]))^2/(tbl[i,4]*tbl[3,j]/tbl[3,4])
+  }
+}
+1-pchisq(Q,df=2)
+
+
+#(pdo+4st)
+st4_1_crash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$SKEW_ANGLE==1),]),
+                nrow(dat_2[(dat_2$PDO>0) & (dat_2$SKEW_ANGLE==1),]), 
+                nrow(dat_2[(dat_2$PDO==0) & (dat_2$SKEW_ANGLE==1),]) + nrow(dat_2[(dat_2$PDO>0) & (dat_2$SKEW_ANGLE==1),]))
+st4_2_crash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$SKEW_ANGLE==2),]),
+                nrow(dat_2[(dat_2$PDO>0) & (dat_2$SKEW_ANGLE==2),]), 
+                nrow(dat_2[(dat_2$PDO==0) & (dat_2$SKEW_ANGLE==2),]) + nrow(dat_2[(dat_2$PDO>0) & (dat_2$SKEW_ANGLE==2),]))
+st4_3_crash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$SKEW_ANGLE==3),]),
+                nrow(dat_2[(dat_2$PDO>0) & (dat_2$SKEW_ANGLE==3),]), 
+                nrow(dat_2[(dat_2$PDO==0) & (dat_2$SKEW_ANGLE==3),]) + nrow(dat_2[(dat_2$PDO>0) & (dat_2$SKEW_ANGLE==3),]))
+total = st4_1_crash + st4_2_crash + st4_3_crash
+tbl <- data.frame(st4_1_crash, st4_2_crash, st4_3_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:3){
+    Q = Q + (tbl[i,j]-(tbl[i,4]*tbl[3,j]/tbl[3,4]))^2/(tbl[i,4]*tbl[3,j]/tbl[3,4])
+  }
+}
+1-pchisq(Q,df=2)
+
+#(pdo+4sg)
+sg4_1_crash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$SKEW_ANGLE==1),]),
+                nrow(dat_3[(dat_3$PDO>0) & (dat_3$SKEW_ANGLE==1),]), 
+                nrow(dat_3[(dat_3$PDO==0) & (dat_3$SKEW_ANGLE==1),]) + nrow(dat_3[(dat_3$PDO>0) & (dat_3$SKEW_ANGLE==1),]))
+sg4_2_crash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$SKEW_ANGLE==2),]),
+                nrow(dat_3[(dat_3$PDO>0) & (dat_3$SKEW_ANGLE==2),]), 
+                nrow(dat_3[(dat_3$PDO==0) & (dat_3$SKEW_ANGLE==2),]) + nrow(dat_3[(dat_3$PDO>0) & (dat_3$SKEW_ANGLE==2),]))
+sg4_3_crash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$SKEW_ANGLE==3),]),
+                nrow(dat_3[(dat_3$PDO>0) & (dat_3$SKEW_ANGLE==3),]), 
+                nrow(dat_3[(dat_3$PDO==0) & (dat_3$SKEW_ANGLE==3),]) + nrow(dat_3[(dat_3$PDO>0) & (dat_3$SKEW_ANGLE==3),]))
+total = sg4_1_crash + sg4_2_crash + sg4_3_crash
+tbl <- data.frame(sg4_1_crash, sg4_2_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:2){
+    Q = Q + (tbl[i,j]-(tbl[i,3]*tbl[3,j]/tbl[3,3]))^2/(tbl[i,3]*tbl[3,j]/tbl[3,3])
+  }
+}
+1-pchisq(Q,df=2)
+
+#(bc + 3st)
+st3_1_crash = c(nrow(dat_1[(dat_1$BC==0) & (dat_1$SKEW_ANGLE==1),]),
+                nrow(dat_1[(dat_1$BC>0) & (dat_1$SKEW_ANGLE==1),]), 
+                nrow(dat_1[(dat_1$BC==0) & (dat_1$SKEW_ANGLE==1),]) + nrow(dat_1[(dat_1$BC>0) & (dat_1$SKEW_ANGLE==1),]))
+st3_2_crash = c(nrow(dat_1[(dat_1$BC==0) & (dat_1$SKEW_ANGLE==2),]),
+                nrow(dat_1[(dat_1$BC>0) & (dat_1$SKEW_ANGLE==2),]), 
+                nrow(dat_1[(dat_1$BC==0) & (dat_1$SKEW_ANGLE==2),]) + nrow(dat_1[(dat_1$BC>0) & (dat_1$SKEW_ANGLE==2),]))
+st3_3_crash = c(nrow(dat_1[(dat_1$BC==0) & (dat_1$SKEW_ANGLE==3),]),
+                nrow(dat_1[(dat_1$BC>0) & (dat_1$SKEW_ANGLE==3),]), 
+                nrow(dat_1[(dat_1$BC==0) & (dat_1$SKEW_ANGLE==3),]) + nrow(dat_1[(dat_1$BC>0) & (dat_1$SKEW_ANGLE==3),]))
+total = st3_1_crash + st3_2_crash + st3_3_crash
+tbl <- data.frame(st3_1_crash, st3_2_crash, st3_3_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:3){
+    Q = Q + (tbl[i,j]-(tbl[i,4]*tbl[3,j]/tbl[3,4]))^2/(tbl[i,4]*tbl[3,j]/tbl[3,4])
+  }
+}
+1-pchisq(Q,df=2)
+
+#(bc+4st)
+st4_1_crash = c(nrow(dat_2[(dat_2$BC==0) & (dat_2$SKEW_ANGLE==1),]),
+                nrow(dat_2[(dat_2$BC>0) & (dat_2$SKEW_ANGLE==1),]), 
+                nrow(dat_2[(dat_2$BC==0) & (dat_2$SKEW_ANGLE==1),]) + nrow(dat_2[(dat_2$BC>0) & (dat_2$SKEW_ANGLE==1),]))
+st4_2_crash = c(nrow(dat_2[(dat_2$BC==0) & (dat_2$SKEW_ANGLE==2),]),
+                nrow(dat_2[(dat_2$BC>0) & (dat_2$SKEW_ANGLE==2),]), 
+                nrow(dat_2[(dat_2$BC==0) & (dat_2$SKEW_ANGLE==2),]) + nrow(dat_2[(dat_2$BC>0) & (dat_2$SKEW_ANGLE==2),]))
+st4_3_crash = c(nrow(dat_2[(dat_2$BC==0) & (dat_2$SKEW_ANGLE==3),]),
+                nrow(dat_2[(dat_2$BC>0) & (dat_2$SKEW_ANGLE==3),]), 
+                nrow(dat_2[(dat_2$BC==0) & (dat_2$SKEW_ANGLE==3),]) + nrow(dat_2[(dat_2$BC>0) & (dat_2$SKEW_ANGLE==3),]))
+total = st4_1_crash + st4_2_crash + st4_3_crash
+tbl <- data.frame(st4_1_crash, st4_2_crash, st4_3_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:3){
+    Q = Q + (tbl[i,j]-(tbl[i,4]*tbl[3,j]/tbl[3,4]))^2/(tbl[i,4]*tbl[3,j]/tbl[3,4])
+  }
+}
+1-pchisq(Q,df=2)
+
+#(bc+4sg)
+sg4_1_crash = c(nrow(dat_3[(dat_3$BC==0) & (dat_3$SKEW_ANGLE==1),]),
+                nrow(dat_3[(dat_3$BC>0) & (dat_3$SKEW_ANGLE==1),]), 
+                nrow(dat_3[(dat_3$BC==0) & (dat_3$SKEW_ANGLE==1),]) + nrow(dat_3[(dat_3$BC>0) & (dat_3$SKEW_ANGLE==1),]))
+sg4_2_crash = c(nrow(dat_3[(dat_3$BC==0) & (dat_3$SKEW_ANGLE==2),]),
+                nrow(dat_3[(dat_3$BC>0) & (dat_3$SKEW_ANGLE==2),]), 
+                nrow(dat_3[(dat_3$BC==0) & (dat_3$SKEW_ANGLE==2),]) + nrow(dat_3[(dat_3$BC>0) & (dat_3$SKEW_ANGLE==2),]))
+sg4_3_crash = c(nrow(dat_3[(dat_3$BC==0) & (dat_3$SKEW_ANGLE==3),]),
+                nrow(dat_3[(dat_3$BC>0) & (dat_3$SKEW_ANGLE==3),]), 
+                nrow(dat_3[(dat_3$BC==0) & (dat_3$SKEW_ANGLE==3),]) + nrow(dat_3[(dat_3$BC>0) & (dat_3$SKEW_ANGLE==3),]))
+total = sg4_1_crash + sg4_2_crash + sg4_3_crash
+tbl <- data.frame(sg4_1_crash, sg4_2_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:2){
+    Q = Q + (tbl[i,j]-(tbl[i,3]*tbl[3,j]/tbl[3,3]))^2/(tbl[i,3]*tbl[3,j]/tbl[3,3])
+  }
+}
+1-pchisq(Q,df=2)
+
+#(KA + 3st)
+st3_1_crash = c(nrow(dat_1[(dat_1$KA==0) & (dat_1$SKEW_ANGLE==1),]),
+                nrow(dat_1[(dat_1$KA>0) & (dat_1$SKEW_ANGLE==1),]), 
+                nrow(dat_1[(dat_1$KA==0) & (dat_1$SKEW_ANGLE==1),]) + nrow(dat_1[(dat_1$KA>0) & (dat_1$SKEW_ANGLE==1),]))
+st3_2_crash = c(nrow(dat_1[(dat_1$KA==0) & (dat_1$SKEW_ANGLE==2),]),
+                nrow(dat_1[(dat_1$KA>0) & (dat_1$SKEW_ANGLE==2),]), 
+                nrow(dat_1[(dat_1$KA==0) & (dat_1$SKEW_ANGLE==2),]) + nrow(dat_1[(dat_1$KA>0) & (dat_1$SKEW_ANGLE==2),]))
+st3_3_crash = c(nrow(dat_1[(dat_1$KA==0) & (dat_1$SKEW_ANGLE==3),]),
+                nrow(dat_1[(dat_1$KA>0) & (dat_1$SKEW_ANGLE==3),]), 
+                nrow(dat_1[(dat_1$KA==0) & (dat_1$SKEW_ANGLE==3),]) + nrow(dat_1[(dat_1$KA>0) & (dat_1$SKEW_ANGLE==3),]))
+total = st3_1_crash + st3_2_crash + st3_3_crash
+tbl <- data.frame(st3_1_crash, st3_2_crash, st3_3_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:3){
+    Q = Q + (tbl[i,j]-(tbl[i,4]*tbl[3,j]/tbl[3,4]))^2/(tbl[i,4]*tbl[3,j]/tbl[3,4])
+  }
+}
+1-pchisq(Q,df=2)
+
+#(ka+4st)
+st4_1_crash = c(nrow(dat_2[(dat_2$KA==0) & (dat_2$SKEW_ANGLE==1),]),
+                nrow(dat_2[(dat_2$KA>0) & (dat_2$SKEW_ANGLE==1),]), 
+                nrow(dat_2[(dat_2$KA==0) & (dat_2$SKEW_ANGLE==1),]) + nrow(dat_2[(dat_2$KA>0) & (dat_2$SKEW_ANGLE==1),]))
+st4_2_crash = c(nrow(dat_2[(dat_2$KA==0) & (dat_2$SKEW_ANGLE==2),]),
+                nrow(dat_2[(dat_2$KA>0) & (dat_2$SKEW_ANGLE==2),]), 
+                nrow(dat_2[(dat_2$KA==0) & (dat_2$SKEW_ANGLE==2),]) + nrow(dat_2[(dat_2$KA>0) & (dat_2$SKEW_ANGLE==2),]))
+st4_3_crash = c(nrow(dat_2[(dat_2$KA==0) & (dat_2$SKEW_ANGLE==3),]),
+                nrow(dat_2[(dat_2$KA>0) & (dat_2$SKEW_ANGLE==3),]), 
+                nrow(dat_2[(dat_2$KA==0) & (dat_2$SKEW_ANGLE==3),]) + nrow(dat_2[(dat_2$KA>0) & (dat_2$SKEW_ANGLE==3),]))
+total = st4_1_crash + st4_2_crash + st4_3_crash
+tbl <- data.frame(st4_1_crash, st4_2_crash, st4_3_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:3){
+    Q = Q + (tbl[i,j]-(tbl[i,4]*tbl[3,j]/tbl[3,4]))^2/(tbl[i,4]*tbl[3,j]/tbl[3,4])
+  }
+}
+1-pchisq(Q,df=2)
+
+#(ka+4sg)
+sg4_1_crash = c(nrow(dat_3[(dat_3$KA==0) & (dat_3$SKEW_ANGLE==1),]),
+                nrow(dat_3[(dat_3$KA>0) & (dat_3$SKEW_ANGLE==1),]), 
+                nrow(dat_3[(dat_3$KA==0) & (dat_3$SKEW_ANGLE==1),]) + nrow(dat_3[(dat_3$KA>0) & (dat_3$SKEW_ANGLE==1),]))
+sg4_2_crash = c(nrow(dat_3[(dat_3$KA==0) & (dat_3$SKEW_ANGLE==2),]),
+                nrow(dat_3[(dat_3$KA>0) & (dat_3$SKEW_ANGLE==2),]), 
+                nrow(dat_3[(dat_3$KA==0) & (dat_3$SKEW_ANGLE==2),]) + nrow(dat_3[(dat_3$KA>0) & (dat_3$SKEW_ANGLE==2),]))
+sg4_3_crash = c(nrow(dat_3[(dat_3$KA==0) & (dat_3$SKEW_ANGLE==3),]),
+                nrow(dat_3[(dat_3$KA>0) & (dat_3$SKEW_ANGLE==3),]), 
+                nrow(dat_3[(dat_3$KA==0) & (dat_3$SKEW_ANGLE==3),]) + nrow(dat_3[(dat_3$KA>0) & (dat_3$SKEW_ANGLE==3),]))
+total = sg4_1_crash + sg4_2_crash + sg4_3_crash
+tbl <- data.frame(sg4_1_crash, sg4_2_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:2){
+    Q = Q + (tbl[i,j]-(tbl[i,3]*tbl[3,j]/tbl[3,3]))^2/(tbl[i,3]*tbl[3,j]/tbl[3,3])
+  }
+}
+1-pchisq(Q,df=2)
+
+
+#### mixed 3st
+st3_1_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & (dat_1$SKEW_ANGLE==1),]),
+                nrow(dat_1[(dat_1$SKEW_ANGLE==1),]) - nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & (dat_1$SKEW_ANGLE==1),]), 
+                nrow(dat_1[(dat_1$SKEW_ANGLE==1),]))
+st3_2_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & (dat_1$SKEW_ANGLE==2),]),
+                nrow(dat_1[(dat_1$SKEW_ANGLE==2),]) - nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & (dat_1$SKEW_ANGLE==2),]), 
+                nrow(dat_1[(dat_1$SKEW_ANGLE==2),]))
+st3_3_crash = c(nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & (dat_1$SKEW_ANGLE==3),]),
+                nrow(dat_1[(dat_1$SKEW_ANGLE==3),]) - nrow(dat_1[(dat_1$PDO==0) & (dat_1$KA==0) & (dat_1$BC==0) & (dat_1$SKEW_ANGLE==3),]), 
+                nrow(dat_1[(dat_1$SKEW_ANGLE==3),]))
+total = st3_1_crash + st3_2_crash + st3_3_crash
+tbl <- data.frame(st3_1_crash, st3_2_crash, st3_3_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:3){
+    Q = Q + (tbl[i,j]-(tbl[i,4]*tbl[3,j]/tbl[3,4]))^2/(tbl[i,4]*tbl[3,j]/tbl[3,4])
+  }
+}
+1-pchisq(Q,df=2)
+
+### Mixed 4t
+st4_1_crash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & (dat_2$SKEW_ANGLE==1),]),
+                nrow(dat_2[(dat_2$SKEW_ANGLE==1),]) - nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & (dat_2$SKEW_ANGLE==1),]), 
+                nrow(dat_2[(dat_2$SKEW_ANGLE==1),]))
+st4_2_crash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & (dat_2$SKEW_ANGLE==2),]),
+                nrow(dat_2[(dat_2$SKEW_ANGLE==2),]) - nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & (dat_2$SKEW_ANGLE==2),]), 
+                nrow(dat_2[(dat_2$SKEW_ANGLE==2),]))
+st4_3_crash = c(nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & (dat_2$SKEW_ANGLE==3),]),
+                nrow(dat_2[(dat_2$SKEW_ANGLE==3),]) - nrow(dat_2[(dat_2$PDO==0) & (dat_2$KA==0) & (dat_2$BC==0) & (dat_2$SKEW_ANGLE==3),]), 
+                nrow(dat_2[(dat_2$SKEW_ANGLE==3),]))
+total = st4_1_crash + st4_2_crash + st4_3_crash
+tbl <- data.frame(st4_1_crash, st4_2_crash, st4_3_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:3){
+    Q = Q + (tbl[i,j]-(tbl[i,4]*tbl[3,j]/tbl[3,4]))^2/(tbl[i,4]*tbl[3,j]/tbl[3,4])
+  }
+}
+1-pchisq(Q,df=2)
+
+
+### Mixed 4sg
+sg4_1_crash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$SKEW_ANGLE==1),]),
+                nrow(dat_3[(dat_3$SKEW_ANGLE==1),]) - nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$SKEW_ANGLE==1),]), 
+                nrow(dat_3[(dat_3$SKEW_ANGLE==1),]))
+sg4_2_crash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$SKEW_ANGLE==2),]),
+                nrow(dat_3[(dat_3$SKEW_ANGLE==2),]) - nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$SKEW_ANGLE==2),]), 
+                nrow(dat_3[(dat_3$SKEW_ANGLE==2),]))
+sg4_3_crash = c(nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$SKEW_ANGLE==3),]),
+                nrow(dat_3[(dat_3$SKEW_ANGLE==3),]) - nrow(dat_3[(dat_3$PDO==0) & (dat_3$KA==0) & (dat_3$BC==0) & (dat_3$SKEW_ANGLE==3),]), 
+                nrow(dat_3[(dat_3$SKEW_ANGLE==3),]))
+total = sg4_1_crash + sg4_2_crash + sg4_3_crash
+tbl <- data.frame(sg4_1_crash, sg4_2_crash, total)
+# we've drop sg4_3_crash, as its size = 0.
+rownames(tbl) <- c('Safe',"Crash","total")
+tbl
+
+Q = 0
+for (i in 1:2){
+  for (j in 1:2){
+    Q = Q + (tbl[i,j]-(tbl[i,3]*tbl[3,j]/tbl[3,3]))^2/(tbl[i,3]*tbl[3,j]/tbl[3,3])
+  }
+}
+1-pchisq(Q,df=2)
 
 ## Cross type + light (PDO)
 #########################################################################################################################################################

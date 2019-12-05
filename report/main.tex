@@ -493,7 +493,7 @@ From the discussion between intersection type and crash counts, we can draw the 
 As we can see that the skewed angle holds little choices of values, so we decide to transform skewed angle into categorical data and also transform PDO crashing number as our previous method, forming the categorical table below. We settle a standard: let $s$ denote the skewed angle, if $0 \le s \le 30$, then we record it as ``1''; If $31 \le s \le 60$, then we record it as ``2''; If $61 \le s \le 90$, then we record it as ``3''.
 
 \begin{table}[H]
-\caption{Categorical table for PDO crash}
+\caption{Discrete skew v.s. PDO crash}
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
 \hline
@@ -508,14 +508,67 @@ Total    & 299  & 70  & 16  & 50 & 10 & 1 & 89 & 13 & 548 \\
 \end{tabular}
 \end{table}
 
-Then, the Pearson test shows that there exists a dependence (codes are in Appendix 2.)
+\begin{table}[H]
+\caption{Discrete skew v.s. BC crash}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+      & 3ST\_1 & 3ST\_2 & 3ST\_3 & 4ST\_1 & 4ST\_2 & 4ST\_3 & 4SG\_1 & 4SG\_2 & Total \\
+\hline
+Nocrash & 203 & 46  & 15 & 25 & 6 & 0 &  29 & 1 & 325\\
+\hline
+Crash    & 96  & 24  & 1  &  25 & 4 & 1 & 60 & 12 & 223\\
+\hline
+Total    & 299  & 70  & 16  & 50 & 10 & 1 & 89 & 13 & 548 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\caption{Discrete skew v.s. KA crash}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+      & 3ST\_1 & 3ST\_2 & 3ST\_3 & 4ST\_1 & 4ST\_2 & 4ST\_3 & 4SG\_1 & 4SG\_2 & Total \\
+\hline
+Nocrash &  285  & 69  & 16 & 44 & 10 &  1 &  71 & 12 &  508\\
+\hline
+Crash    & 14  & 1  & 0  &  6 & 0 & 0 & 18 & 1 & 40\\
+\hline
+Total    & 299  & 70  & 16  & 50 & 10 & 1 & 89 & 13 & 548 \\
+\hline
+\end{tabular}
+\end{table}
+
+Then, the Pearson test shows that there exists a dependence for all three kinds of crashes (codes are in Appendix 2.) and we have also conducted the association test for separate single one v.s one group as following, the p-value table shows:
+
+
+\begin{table}[H]
+\caption{P-value for skew angle vs Crash}
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+p-value & 3ST & 4ST & 4SG  \\
+\hline
+PDO & 0.1472 & 0.6058 & 0.2026 \\
+\hline
+BC & 0.0806 & 0.5006 & 0.1840\\
+\hline
+KA & 0.3197  & 0.4809 & 0.5556 \\
+\hline
+Mixed & 0.0496 & 0.2618 & 0.2026 \\
+\hline
+\end{tabular}
+\end{table}
+
+
 
 \subsubsection{Crossing type + Lighting vs Crash}
 
 As the lighting itself is a dummy variable, we can form the following categorical table:
 
 \begin{table}[H]
-\caption{Categorical table for PDO crash}
+\caption{Crossing type + Lighting v.s. PDO crash}
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|}
 \hline
@@ -535,7 +588,7 @@ Then, the Pearson test shows that there exists a dependence (codes are in Append
 Here we get the 3 2-by-2 contingency table between Lighting and crash with PDO crash, controlling intersection type. Here, '0' stands for no Lighting, '1' stands for Lighting.
 
 \begin{table}[H]
-\caption{Categorical table for PDO crash}
+\caption{Crossing type + Lighting separately v.s. PDO crash}
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
 \hline
@@ -580,7 +633,7 @@ Mixed & 0.0879 & 0.9494 & 0.5732 \\
 As the lighting itself is a dummy variable, we can also form the following categorical table:
 
 \begin{table}[H]
-\caption{Categorical table for PDO crash}
+\caption{Crossing type + turns v.s. PDO crash}
 \centering
 \tiny
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
@@ -601,7 +654,7 @@ where ``00'' represents no left approach or right approach; ``01'' represents no
 Based on the results from the EDA part, we combine Approach Left Turn and Approach Right Turn as one dummy variable where 1 stands for there is an approach turn and 0 stands for not. Even then, approach turn existence is still a rare event in all intersection types. Also, if we continuing partitioning the data by crash type to form contingency table, we will have cells with extremely small counts equal to 0. Hence, we only analyses with mixed data with all crashes types mixed. We can form the following categorical table:
 
 \begin{table}[H]
-\caption{Categorical table for Turn vs Crash}
+\caption{Crossing type + turns separately v.s. PDO crash}
 \centering
 \tiny
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
